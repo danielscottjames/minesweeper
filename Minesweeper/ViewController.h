@@ -7,11 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TitleViewController.h"
+#import "Minesweeper-Swift.h"
 
-@interface ViewController : UIViewController <UIScrollViewDelegate, TitleViewControllerDelegate, UIPopoverPresentationControllerDelegate>
+typedef NS_ENUM(NSInteger, SmileyState) {
+    SmileyStateNormal,SmileyStateAction,SmileyStateLose,SmileyStateWin
+};
+
+@interface ViewController : UIViewController <UIScrollViewDelegate, UIPopoverPresentationControllerDelegate, MinesweeperTimerDelegate>
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
-@property (weak, nonatomic) IBOutlet UIView *titleView;
+@property (weak, nonatomic) IBOutlet UILabel *bombsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *timerLabel;
+@property (weak, nonatomic) IBOutlet UILabel *bombsLabelBackground;
+@property (weak, nonatomic) IBOutlet UILabel *timerLabelBackground;
+@property (weak, nonatomic) IBOutlet UIButton *smileyButton;
+
+@property (nonatomic, assign) SmileyState smileyState;
+@property (nonatomic, assign) int bombs;
+
+- (void) resetWithBombs:(int)b;
 
 - (void) promptNewGame;
 

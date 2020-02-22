@@ -7,7 +7,6 @@
 //
 
 #import "SettingsTableViewController.h"
-#import "ViewController.h"
 #import "SettingsManager.h"
 
 @interface SettingsTableViewController ()
@@ -124,19 +123,6 @@
     // Help
     if (indexPath.section == 2) {
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.danielscottjames.com/minesweeper.html"]];
-    }
-    
-    // Load Game Center
-    if (indexPath.section == 3 && indexPath.row == 0) {
-        GKGameCenterViewController *gcViewController = [[GKGameCenterViewController alloc] init];
-        
-        gcViewController.gameCenterDelegate = self;
-        
-        
-        gcViewController.viewState = GKGameCenterViewControllerStateLeaderboards;
-        gcViewController.leaderboardIdentifier = [[SettingsManager sharedInstance] getIdentifierForCurrentDifficultyLevel];
-        
-        [self presentViewController:gcViewController animated:YES completion:nil];
     }
 }
 

@@ -16,7 +16,6 @@
 #endif
 
 #define APP_ID              892956460
-#define FLURRY_ID           @"YT3SWV9RSV8T28VVB2BF"
 
 #define SQUARE_SIZE_REGULAR 47
 #define SQUARE_SIZE_COMPACT 35

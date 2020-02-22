@@ -8,7 +8,6 @@
 
 #import "SettingsManager.h"
 #import <AudioToolbox/AudioServices.h>
-#import "Flurry.h"
 #import "Minesweeper-Swift.h"
 
 @interface SettingsManager () {
@@ -104,8 +103,6 @@
 
 - (void) gameOver:(BOOL)won {
     if (won) {
-        [Flurry logEvent:@"Game_Won"];
-        
         NSInteger wins = [[NSUserDefaults standardUserDefaults] integerForKey:@"wins"];
         [[NSUserDefaults standardUserDefaults] setInteger:++wins forKey:@"wins"];
         
@@ -113,8 +110,6 @@
             [self promptReview];
         }
     } else {
-        [Flurry logEvent:@"Game_Won"];
-        
         NSInteger wins = [[NSUserDefaults standardUserDefaults] integerForKey:@"loses"];
         [[NSUserDefaults standardUserDefaults] setInteger:++wins forKey:@"loses"];
     }
@@ -263,7 +258,6 @@
 }
 
 - (void) promptReview {
-    [Flurry logEvent:@"Given_Review_Prompt"];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Enjoy This Game?"
                                                     message:@"Would you please take a moment to rate this game? This message will not be displayed again."
                                                    delegate:self
@@ -274,8 +268,6 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
-        [Flurry logEvent:@"Accepted_Review_Prompt"];
-        
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"hasReviewed"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         

@@ -48,20 +48,27 @@
         
         CGRect gridFrame = CGRectMake(-1, -1, _game.width*_squareSize, _game.height*_squareSize);
         
-        self.layer.cornerRadius = 10;
-        self.layer.masksToBounds = true;
+        // Corner rounding maybe one day
+//        self.layer.cornerRadius = 10;
+//        self.layer.masksToBounds = true;
         
         UIView *backgroundView = [[UIView alloc] initWithFrame:gridFrame];
-        [[backgroundView layer] setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:1].CGColor];
+        [[backgroundView layer] setBackgroundColor:[UIColor colorWithWhite:1 alpha:.3].CGColor];
         backgroundView.userInteractionEnabled = NO;
         [self addSubview:backgroundView];
         
-//        UIVisualEffect *blurEffect;
-//        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleLight];
-//        UIVisualEffectView *visualEffectView;
-//        visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-//        visualEffectView.frame = backgroundView.bounds;
-//        [backgroundView addSubview:visualEffectView];
+        // Add drop shadow
+        self.layer.shadowColor = [[UIColor blackColor] CGColor];
+        self.layer.shadowOffset = CGSizeMake(0,0);
+        self.layer.shadowOpacity = 1;
+        self.layer.shadowRadius = 20;
+        
+        UIVisualEffect *blurEffect;
+        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        UIVisualEffectView *visualEffectView;
+        visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        visualEffectView.frame = backgroundView.bounds;
+        [backgroundView addSubview:visualEffectView];
         
         UIView *frontView = [[UIView alloc] initWithFrame:gridFrame];
         [[frontView layer] setBorderWidth:1];
@@ -73,7 +80,7 @@
         _shadowView.layer.shadowColor = [UIColor blackColor].CGColor;
         _shadowView.layer.shadowOffset = CGSizeMake(0, 0);
         _shadowView.layer.shadowOpacity = 1;
-        _shadowView.layer.shadowRadius = 1;
+        _shadowView.layer.shadowRadius = 0.75;
         _shadowView.clipsToBounds = YES;
         
         [self calculateShadowPath];
@@ -485,7 +492,7 @@
     [self addGestureRecognizer:singleTap];
     
     if (won) {
-//        self.title.smileyState = SmileyStateWin;
+        self.title.smileyState = SmileyStateWin;
         
         // Report time
         [[SettingsManager sharedInstance] reportHighScore:_game.time];
@@ -500,7 +507,7 @@
             }
         }
     } else {
-//        self.title.smileyState = SmileyStateLose;
+        self.title.smileyState = SmileyStateLose;
         [SoundManager.sharedInstance playSoundEffect:SoundEffectExplosion];
         
         // Reveal all the squares
@@ -560,7 +567,7 @@
     _shadowView.layer.shadowPath = path.CGPath;
 }
 
-//- (void) setIsPaused:(BOOL)isPaused {
+- (void) setIsPaused:(BOOL)isPaused {
 //    _isPaused = isPaused;
 //    
 //    if (self.isPlaying) {
@@ -570,7 +577,7 @@
 //            [_title startTimer];
 //        }
 //    }
-//}
+}
 
 - (NSSet *) getNeighborSquares:(Square *)square {
     int row = (int)square.indexPath.row;

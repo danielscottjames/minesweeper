@@ -26,15 +26,13 @@
 		65ABCF6B195A10130037EE2F /* Explosion.caf in Resources */ = {isa = PBXBuildFile; fileRef = 65ABCF68195A0E0E0037EE2F /* Explosion.caf */; };
 		65ABCF6C195A10170037EE2F /* Flag.caf in Resources */ = {isa = PBXBuildFile; fileRef = 65ABCF69195A0E0E0037EE2F /* Flag.caf */; };
 		65ABCF6D195A101B0037EE2F /* Select.caf in Resources */ = {isa = PBXBuildFile; fileRef = 65ABCF6A195A0E0E0037EE2F /* Select.caf */; };
-		65ABCF6F195A17940037EE2F /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65ABCF6E195A17940037EE2F /* GameKit.framework */; };
 		65ABCF72195A2B380037EE2F /* SettingsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 65ABCF71195A2B380037EE2F /* SettingsManager.m */; };
-		65B85DE51953733500D93DC8 /* TitleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B85DE31953733500D93DC8 /* TitleViewController.m */; };
-		65B85DE61953733500D93DC8 /* TitleViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 65B85DE41953733500D93DC8 /* TitleViewController.xib */; };
-		65C40C632172739400C60170 /* TitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C40C622172739400C60170 /* TitleView.swift */; };
-		65CFE9651C3098E70021E067 /* libFlurry_7.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65CFE9641C3098E70021E067 /* libFlurry_7.3.0.a */; };
 		65CFE9671C30DCF30021E067 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CFE9661C30DCF30021E067 /* SoundManager.swift */; };
 		65CFE96F1C31F3710021E067 /* AdvancedSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CFE96E1C31F3710021E067 /* AdvancedSettingsTableViewController.swift */; };
 		65CFE9711C3312190021E067 /* MinesweeperGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CFE9701C3312190021E067 /* MinesweeperGame.swift */; };
+		65E0452023FB442A0026D856 /* TitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E0451F23FB442A0026D856 /* TitleView.swift */; };
+		65E0452C23FB69730026D856 /* InsetLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E0452B23FB69730026D856 /* InsetLabel.swift */; };
+		65E0453223FB7EE70026D856 /* font.otf in Resources */ = {isa = PBXBuildFile; fileRef = 65E0453123FB7EE70026D856 /* font.otf */; };
 		65E8D45F19EDA87300FD9054 /* LaunchImage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65E8D45E19EDA87300FD9054 /* LaunchImage.storyboard */; };
 /* End PBXBuildFile section */
 
@@ -67,19 +65,14 @@
 		65ABCF68195A0E0E0037EE2F /* Explosion.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Explosion.caf; sourceTree = "<group>"; };
 		65ABCF69195A0E0E0037EE2F /* Flag.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Flag.caf; sourceTree = "<group>"; };
 		65ABCF6A195A0E0E0037EE2F /* Select.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Select.caf; sourceTree = "<group>"; };
-		65ABCF6E195A17940037EE2F /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		65ABCF70195A2B380037EE2F /* SettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsManager.h; sourceTree = "<group>"; };
 		65ABCF71195A2B380037EE2F /* SettingsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsManager.m; sourceTree = "<group>"; };
-		65B85DE21953733500D93DC8 /* TitleViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TitleViewController.h; sourceTree = "<group>"; };
-		65B85DE31953733500D93DC8 /* TitleViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitleViewController.m; sourceTree = "<group>"; };
-		65B85DE41953733500D93DC8 /* TitleViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleViewController.xib; sourceTree = "<group>"; };
-		65C40C622172739400C60170 /* TitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleView.swift; sourceTree = "<group>"; };
-		65CFE9621C3098E70021E067 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Flurry.h; sourceTree = "<group>"; };
-		65CFE9631C3098E70021E067 /* FlurryWatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlurryWatch.h; sourceTree = "<group>"; };
-		65CFE9641C3098E70021E067 /* libFlurry_7.3.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libFlurry_7.3.0.a; sourceTree = "<group>"; };
 		65CFE9661C30DCF30021E067 /* SoundManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		65CFE96E1C31F3710021E067 /* AdvancedSettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsTableViewController.swift; sourceTree = "<group>"; };
 		65CFE9701C3312190021E067 /* MinesweeperGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinesweeperGame.swift; sourceTree = "<group>"; };
+		65E0451F23FB442A0026D856 /* TitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleView.swift; sourceTree = "<group>"; };
+		65E0452B23FB69730026D856 /* InsetLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetLabel.swift; sourceTree = "<group>"; };
+		65E0453123FB7EE70026D856 /* font.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = font.otf; sourceTree = "<group>"; };
 		65E8D45E19EDA87300FD9054 /* LaunchImage.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchImage.storyboard; path = ../LaunchImage.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -88,14 +81,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				65CFE9651C3098E70021E067 /* libFlurry_7.3.0.a in Frameworks */,
 				65726113195CD96200C8C7D0 /* SystemConfiguration.framework in Frameworks */,
 				65726111195CD95600C8C7D0 /* Security.framework in Frameworks */,
 				651759C71950FB3300E63305 /* QuartzCore.framework in Frameworks */,
 				6517598B1950F03200E63305 /* CoreGraphics.framework in Frameworks */,
 				6517598D1950F03200E63305 /* UIKit.framework in Frameworks */,
 				651759891950F03200E63305 /* Foundation.framework in Frameworks */,
-				65ABCF6F195A17940037EE2F /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -122,10 +113,8 @@
 		651759871950F03200E63305 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6572610C195CD91500C8C7D0 /* Flurry */,
 				65726112195CD96200C8C7D0 /* SystemConfiguration.framework */,
 				65726110195CD95600C8C7D0 /* Security.framework */,
-				65ABCF6E195A17940037EE2F /* GameKit.framework */,
 				651759C61950FB3300E63305 /* QuartzCore.framework */,
 				651759881950F03200E63305 /* Foundation.framework */,
 				6517598A1950F03200E63305 /* CoreGraphics.framework */,
@@ -146,6 +135,8 @@
 				651759A01950F03200E63305 /* ViewController.h */,
 				651759A11950F03200E63305 /* ViewController.m */,
 				651759CE195267AE00E63305 /* Grid.h */,
+				65E0451F23FB442A0026D856 /* TitleView.swift */,
+				65E0452B23FB69730026D856 /* InsetLabel.swift */,
 				651759CF195267AE00E63305 /* Grid.m */,
 				651759C81950FDAF00E63305 /* Square.h */,
 				651759C91950FDAF00E63305 /* Square.m */,
@@ -154,11 +145,7 @@
 				659B1BC11B1BD82D00445BF7 /* CustomSettingsViewController.swift */,
 				65CFE96E1C31F3710021E067 /* AdvancedSettingsTableViewController.swift */,
 				653EBC3B1953E2F5007302F4 /* Main.storyboard */,
-				65C40C622172739400C60170 /* TitleView.swift */,
 				65E8D45E19EDA87300FD9054 /* LaunchImage.storyboard */,
-				65B85DE41953733500D93DC8 /* TitleViewController.xib */,
-				65B85DE21953733500D93DC8 /* TitleViewController.h */,
-				65B85DE31953733500D93DC8 /* TitleViewController.m */,
 				651759A31950F03200E63305 /* Images.xcassets */,
 				6517598F1950F03200E63305 /* Supporting Files */,
 				659B1BC01B1BD82C00445BF7 /* Minesweeper-Bridging-Header.h */,
@@ -169,6 +156,7 @@
 		6517598F1950F03200E63305 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				65E0453123FB7EE70026D856 /* font.otf */,
 				65ABCF68195A0E0E0037EE2F /* Explosion.caf */,
 				65ABCF69195A0E0E0037EE2F /* Flag.caf */,
 				65ABCF6A195A0E0E0037EE2F /* Select.caf */,
@@ -178,17 +166,6 @@
 				651759961950F03200E63305 /* Minesweeper-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		6572610C195CD91500C8C7D0 /* Flurry */ = {
-			isa = PBXGroup;
-			children = (
-				65CFE9621C3098E70021E067 /* Flurry.h */,
-				65CFE9631C3098E70021E067 /* FlurryWatch.h */,
-				65CFE9641C3098E70021E067 /* libFlurry_7.3.0.a */,
-			);
-			name = Flurry;
-			path = Minesweeper/Flurry;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -219,7 +196,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 1000;
-				ORGANIZATIONNAME = developersBliss;
+				ORGANIZATIONNAME = danieljames;
 				TargetAttributes = {
 					651759841950F03200E63305 = {
 						DevelopmentTeam = V447A2EZ7P;
@@ -235,7 +212,7 @@
 			};
 			buildConfigurationList = 651759801950F03200E63305 /* Build configuration list for PBXProject "Minesweeper" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
@@ -261,9 +238,9 @@
 				65ABCF6B195A10130037EE2F /* Explosion.caf in Resources */,
 				6522F5C61953E40100EA1732 /* Images.xcassets in Resources */,
 				653EBC3D1953E2F5007302F4 /* Main.storyboard in Resources */,
-				65B85DE61953733500D93DC8 /* TitleViewController.xib in Resources */,
 				65E8D45F19EDA87300FD9054 /* LaunchImage.storyboard in Resources */,
 				651759931950F03200E63305 /* InfoPlist.strings in Resources */,
+				65E0453223FB7EE70026D856 /* font.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,15 +255,15 @@
 				651759CA1950FDAF00E63305 /* Square.m in Sources */,
 				65CFE9711C3312190021E067 /* MinesweeperGame.swift in Sources */,
 				65ABCF72195A2B380037EE2F /* SettingsManager.m in Sources */,
-				65B85DE51953733500D93DC8 /* TitleViewController.m in Sources */,
 				651759D0195267AE00E63305 /* Grid.m in Sources */,
 				651759A21950F03200E63305 /* ViewController.m in Sources */,
 				651759991950F03200E63305 /* AppDelegate.m in Sources */,
 				65CFE96F1C31F3710021E067 /* AdvancedSettingsTableViewController.swift in Sources */,
 				651759951950F03200E63305 /* main.m in Sources */,
+				65E0452C23FB69730026D856 /* InsetLabel.swift in Sources */,
 				659B1BC21B1BD82D00445BF7 /* CustomSettingsViewController.swift in Sources */,
-				65C40C632172739400C60170 /* TitleView.swift in Sources */,
 				65CFE9671C30DCF30021E067 /* SoundManager.swift in Sources */,
+				65E0452023FB442A0026D856 /* TitleView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -331,7 +308,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -351,7 +328,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 3.0;
@@ -386,7 +363,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -399,7 +376,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
@@ -416,17 +393,19 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8.0;
 				DEVELOPMENT_TEAM = V447A2EZ7P;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Minesweeper/Minesweeper-Prefix.pch";
 				INFOPLIST_FILE = "Minesweeper/Minesweeper-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Minesweeper/Flurry",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.developersbliss.NewMinesweeper;
+				MARKETING_VERSION = 2.2;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.danieljames.minesweeper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -445,17 +424,19 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8.0;
 				DEVELOPMENT_TEAM = V447A2EZ7P;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Minesweeper/Minesweeper-Prefix.pch";
 				INFOPLIST_FILE = "Minesweeper/Minesweeper-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Minesweeper/Flurry",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.developersbliss.NewMinesweeper;
+				MARKETING_VERSION = 2.2;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.danieljames.minesweeper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";

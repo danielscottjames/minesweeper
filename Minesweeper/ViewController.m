@@ -9,13 +9,11 @@
 #import "ViewController.h"
 #import "Grid.h"
 #import <GameKit/GameKit.h>
-#import "Flurry.h"
 #import "SettingsManager.h"
 #import "Minesweeper-Swift.h"
 
 @interface ViewController () {
     Grid *_grid;
-//    TitleViewController *_title;
     
     MinesweeperGame *_game;
     BOOL _alreadyPaused;
@@ -29,14 +27,14 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background2"]];
     
-//    _title = [[TitleViewController alloc] initWithNibName:@"TitleViewController" bundle:nil];
-//    self.titleView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.titleView.widthAnchor constraintEqualToConstant:175].active = YES;
-    [self.titleView.widthAnchor constraintEqualToConstant:40].active = YES;
-//    self.navigationItem.titleView = self.titleView;
-//    _title.delegate = self;
+    self.timerLabelBackground.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background"]];
+    self.bombsLabelBackground.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Background"]];
     
+    self.timerLabelBackground.layer.cornerRadius = 3;
+    self.bombsLabelBackground.layer.cornerRadius = 3;
+        
     //Register for application states
     [[NSNotificationCenter defaultCenter]addObserver:self
                                             selector:@selector(applicationDidBecomeActive:)
@@ -72,7 +70,6 @@
 - (void) viewDidAppear:(BOOL)animated {
     if (!_grid) {
         [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(setInsets)    name:UIDeviceOrientationDidChangeNotification  object:nil];
-        [self authenticateLocalPlayer];
         [self newGame];
     }
 }
@@ -118,29 +115,6 @@
     return UIModalPresentationNone;
 }
 
--(void)authenticateLocalPlayer{
-//    __weak GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
-//
-//    localPlayer.authenticateHandler = ^(UIViewController *viewController, NSError *error){
-//        if (viewController != nil) {
-//            [self presentViewController:viewController animated:YES completion:nil];
-//        } else {
-//            if ([localPlayer.alias isEqualToString:@"achilli78"]) {
-//                if ([GKLocalPlayer localPlayer].isAuthenticated) {
-//                    GKScore* score = [[GKScore alloc] initWithLeaderboardIdentifier:@"DifficultyLevelHard"];
-//                    score.value = 103;
-//                    [GKScore reportScores:@[score] withCompletionHandler:^(NSError *error) {
-//                        if (error) {
-//                            NSLog(@"Error Reporting Custom Score %@", error);
-//                            // handle error
-//                        }
-//                    }];
-//                }
-//            }
-//        }
-//    };
-}
-
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
     return _grid;
@@ -161,10 +135,6 @@
     [self setInsets];
 }
 
-- (void) smileyPressed:(TitleViewController *)sender {
-    [self promptNewGame];
-}
-
 - (void) newGame {
     if (_game != nil) {
         _game.state = GameStateFinished;
@@ -176,22 +146,16 @@
     NSInteger height = [[SettingsManager sharedInstance] getHeight];
     NSInteger mines = [[SettingsManager sharedInstance] getMines];
     
-    [Flurry logEvent:[NSString stringWithFormat:@"New_Game_%ld", (long)difficultyLevel]];
     _game = [[MinesweeperGame alloc] initWithDifficulty:difficultyLevel withWidth:width withHeight:height withMines:mines];
     
     if (_grid) {
         [_grid removeFromSuperview];
     }
     
-    
-    
-    CGSize size = self.scrollView.frame.size;
-    size.height = size.height - (self.navigationController.navigationBar.frame.size.height+[UIApplication sharedApplication].statusBarFrame.size.height);
-    
     _grid = [[Grid alloc] initWithGame:_game withSize:self.traitCollection.horizontalSizeClass];
-//    _grid.title = _title;
-//    [_title resetWithBombs:(int)_game.mines];
-//    _game.timerDelegate = _title;
+    _grid.title = self;
+    [self resetWithBombs:(int)_game.mines];
+    _game.timerDelegate = self;
     
     self.scrollView.contentSize = _grid.frame.size;
     [self setInsets];
@@ -200,7 +164,10 @@
 
 - (void) setInsets {
     CGSize size = self.scrollView.frame.size;
-    size.height = size.height - (self.navigationController.navigationBar.frame.size.height+[UIApplication sharedApplication].statusBarFrame.size.height);
+    CGFloat offsetTop = self.scrollView.safeAreaInsets.top;
+    CGFloat offsetBottom = self.scrollView.safeAreaInsets.bottom;
+    NSLog(@"height: %f, offsetTop: %f, offsetBottom: %f", size.height, offsetTop, offsetBottom);
+    size.height = size.height - offsetTop - offsetBottom;
     
     float paddingX, paddingY;
     if (_grid.frame.size.width > size.width) {
@@ -213,8 +180,8 @@
     } else {
         paddingY = (size.height - _grid.frame.size.height)/2.0;
     }
-    
-    self.scrollView.contentInset = UIEdgeInsetsMake(paddingY + self.navigationController.navigationBar.frame.size.height+[UIApplication sharedApplication].statusBarFrame.size.height, paddingX, paddingY, paddingX);
+
+    self.scrollView.contentInset = UIEdgeInsetsMake(paddingY, paddingX, paddingY, paddingX);
 }
 
 - (void) promptNewGame {
@@ -235,6 +202,66 @@
     _game.isPaused = false;
     if (buttonIndex == 1) {
         [self newGame];
+    }
+}
+
+- (void) resetWithBombs:(int)b {
+    self.time = 0;
+    self.bombs = b;
+    self.smileyState = SmileyStateNormal;
+}
+
+- (void) setBombs:(int)bombs {
+    _bombs = bombs;
+    
+    if (self.bombs < -9) {
+        self.bombsLabel.text = [NSString stringWithFormat:@"-%d", -self.bombs];
+    } else if (self.bombs < 0) {
+        self.bombsLabel.text = [NSString stringWithFormat:@" -%d", -self.bombs];
+    } else if (self.bombs < 10) {
+        self.bombsLabel.text = [NSString stringWithFormat:@"  %d", self.bombs];
+    } else if (self.bombs < 100) {
+        self.bombsLabel.text = [NSString stringWithFormat:@" %d", self.bombs];
+    } else {
+        self.bombsLabel.text = [NSString stringWithFormat:@"%d", self.bombs];
+    }
+}
+
+- (void) timeChangedWithTime:(NSInteger)time {
+    [self setTime:time];
+}
+
+- (void) setTime:(NSInteger)time {
+    if (time > 999) {
+        time = 999;
+    }
+    
+    if (time < 10) {
+        self.timerLabel.text = [NSString stringWithFormat:@"  %ld", (long)time];
+    } else if (time < 100) {
+        self.timerLabel.text = [NSString stringWithFormat:@" %ld", (long)time];
+    } else if (time <= 999) {
+        self.timerLabel.text = [NSString stringWithFormat:@"%ld", (long)time];
+    }
+}
+
+- (void) setSmileyState:(SmileyState)smileyState {
+    _smileyState = smileyState;
+    
+    switch (self.smileyState) {
+        case SmileyStateAction:
+            self.smileyButton.titleLabel.text = @"😮";
+            break;
+        case SmileyStateLose:
+            self.smileyButton.titleLabel.text = @"😵";
+            break;
+        case SmileyStateWin:
+            self.smileyButton.titleLabel.text = @"😎";
+            break;
+            
+        case SmileyStateNormal:
+        default:
+            self.smileyButton.titleLabel.text = @"😀";
     }
 }
 

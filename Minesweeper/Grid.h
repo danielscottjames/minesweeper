@@ -7,14 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TitleViewController.h"
-
+#import "ViewController.h"
 
 @class MinesweeperGame;
 
 @interface Grid : UIView
 
-@property (nonatomic, retain) TitleViewController* title;
+@property (nonatomic, retain) ViewController* title;
 
 @property (nonatomic, strong) NSMutableArray *squares;
 

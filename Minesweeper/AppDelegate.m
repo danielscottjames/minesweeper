@@ -8,22 +8,12 @@
 
 #import "AppDelegate.h"
 #import "SettingsManager.h"
-#import "Flurry.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    
-    //note: iOS only allows one crash reporting tool per app; if using another, set to: NO
-    [Flurry setCrashReportingEnabled:YES];
-    
-    // Replace YOUR_API_KEY with the api key in the downloaded package
-    if (!DEBUG_MODE) {
-        [Flurry startSession:FLURRY_ID];
-    }
-    
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     
     // Check for 3DTouch

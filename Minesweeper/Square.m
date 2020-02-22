@@ -86,15 +86,15 @@
             
             CABasicAnimation *backgroundColor = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
             backgroundColor.fromValue = (id)(self.layer.backgroundColor);
-            backgroundColor.toValue   = (id)[[self colorForNumber:self.number] colorWithAlphaComponent:.075].CGColor;
+            backgroundColor.toValue   = (id)[[self colorForNumber:self.number] colorWithAlphaComponent:.14].CGColor;
             // ... and change the model value
-            self.layer.backgroundColor = [[self colorForNumber:self.number] colorWithAlphaComponent:.075].CGColor;
+            self.layer.backgroundColor = [[self colorForNumber:self.number] colorWithAlphaComponent:.14].CGColor;
             
             CABasicAnimation *borderColor = [CABasicAnimation animationWithKeyPath:@"borderColor"];
             borderColor.fromValue = (id)(self.layer.borderColor);
             borderColor.toValue   = (id)newBorderColor.CGColor;
             // ... and change the model value
-            self.layer.borderColor = [[self colorForNumber:self.number] colorWithAlphaComponent:.05].CGColor;
+            self.layer.borderColor = [[self colorForNumber:self.number] colorWithAlphaComponent:.15].CGColor;
             
 //            CABasicAnimation *borderWidth = [CABasicAnimation animationWithKeyPath:@"borderWidth"];
 //            borderWidth.fromValue = [NSNumber numberWithFloat:self.layer.borderWidth];

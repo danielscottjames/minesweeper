@@ -9,8 +9,10 @@
 import UIKit
 
 class TitleView: UIView {
-    
+    /**
+            Need this so the button works
+     */
     override var intrinsicContentSize: CGSize {
-        return UIView.layoutFittingExpandedSize
+        return CGSize(width:175, height:40);
     }
 }
