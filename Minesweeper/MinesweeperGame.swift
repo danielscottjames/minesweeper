@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import JavaScriptCore
 
 @objc enum GameState :Int {
     case FirstMove, Playing, Finished
@@ -17,6 +18,20 @@ import Foundation
 }
 
 @objc class MinesweeperGame : NSObject {
+    private static var source : String? = {
+        guard let url = Bundle.main.path(forResource: "minesweeper", ofType: "js", inDirectory: nil, forLocalization: nil) else {
+            return nil
+        }
+        guard let source = try? NSString(contentsOfFile: url, encoding: String.Encoding.utf8.rawValue) else {
+            return nil
+        }
+        
+        return "\(source)"
+    }()
+    
+    let context = JSContext()!
+    let model: JSValue;
+    
     @objc let difficulty :DifficultyLevel;
     @objc let width:Int
     @objc let height:Int
@@ -58,6 +73,33 @@ import Foundation
         state = .FirstMove;
         isPaused = false;
         time = 0;
+        
+        context.exceptionHandler = { context, exception in
+            print("JS EXCEPTION:")
+            print(exception!.toString()!)
+        }
+        context.evaluateScript(MinesweeperGame.source);
+        model = (context.evaluateScript("MineSweeper")?.construct(withArguments: [width, height, mines]))!
+    }
+    
+    @objc func initModel(x: Int, y: Int) {
+        model.invokeMethod("init", withArguments: [["x":x, "y":y]]);
+    }
+    
+    @objc func getBoard() -> [[Dictionary<String, Any>]] {
+        return model.invokeMethod("getBoard", withArguments: []).toArray() as! [[Dictionary<String, Any>]];
+    }
+    
+    @objc func getGameState() -> Dictionary<String, Any> {
+        return model.invokeMethod("getGameState", withArguments: [])?.toDictionary() as! Dictionary<String, Any>;
+    }
+    
+    @objc func flag(x: Int, y: Int) {
+        model.invokeMethod("flag", withArguments: [["x":x, "y":y]]);
+    }
+    
+    @objc func tap(x: Int, y: Int) {
+        model.invokeMethod("tap", withArguments: [["x":x, "y":y]]);
     }
     
     private func startTimer() {

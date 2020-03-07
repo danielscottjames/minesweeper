@@ -68,6 +68,7 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     if (!_grid) {
         [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(setInsets)    name:UIDeviceOrientationDidChangeNotification  object:nil];
         [self newGame];
@@ -75,21 +76,18 @@
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
-    NSLog(@"View will disappear.");
     [super viewWillDisappear:animated];
     
     _game.isPaused = true;
 }
 
 - (void) viewWillAppear:(BOOL)animated {
-    NSLog(@"View will appear.");
     [super viewWillAppear:animated];
     
     _game.isPaused = false;
 }
 
 - (void) applicationDidBecomeActive: (id) sender {
-    NSLog(@"Application became active.");
     if (!_alreadyPaused) {
         _game.isPaused = NO;
     }
@@ -166,7 +164,6 @@
     CGSize size = self.scrollView.frame.size;
     CGFloat offsetTop = self.scrollView.safeAreaInsets.top;
     CGFloat offsetBottom = self.scrollView.safeAreaInsets.bottom;
-    NSLog(@"height: %f, offsetTop: %f, offsetBottom: %f", size.height, offsetTop, offsetBottom);
     size.height = size.height - offsetTop - offsetBottom;
     
     float paddingX, paddingY;
@@ -186,21 +183,37 @@
 
 - (void) promptNewGame {
     if (_game.state == GameStatePlaying) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"New Game?"
-                                                        message:@"Would you like to start a new game and quit the current one?"
-                                                       delegate:self
-                                              cancelButtonTitle:@"Cancel"
-                                              otherButtonTitles:@"Yes", nil];
-        [alert show];
+        UIAlertController * alert = [UIAlertController
+                                     alertControllerWithTitle:@"New Game?"
+                                     message:@"Would you like to start a new game and quit the current one?"
+                                     preferredStyle:UIAlertControllerStyleAlert];
+
+        UIAlertAction* yesButton = [UIAlertAction
+                                    actionWithTitle:@"Yes"
+                                    style:UIAlertActionStyleDestructive
+                                    handler:^(UIAlertAction * action) {
+            self->_game.isPaused = false;
+            [self newGame];
+                                    }];
+
+        UIAlertAction* noButton = [UIAlertAction
+                                   actionWithTitle:@"No"
+                                   style:UIAlertActionStyleDefault
+                                   handler:^(UIAlertAction * action) {
+            self->_game.isPaused = false;
+                                   }];
+
+        [alert addAction:noButton];
+        [alert addAction:yesButton];
+        
+        if (self.presentedViewController) {
+            [[self presentedViewController] presentViewController:alert animated:YES completion:nil];
+        } else {
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+        
         _game.isPaused = true;
     } else {
-        [self newGame];
-    }
-}
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    _game.isPaused = false;
-    if (buttonIndex == 1) {
         [self newGame];
     }
 }

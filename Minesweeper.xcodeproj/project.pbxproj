@@ -20,6 +20,7 @@
 		651759D0195267AE00E63305 /* Grid.m in Sources */ = {isa = PBXBuildFile; fileRef = 651759CF195267AE00E63305 /* Grid.m */; };
 		6522F5C61953E40100EA1732 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 651759A31950F03200E63305 /* Images.xcassets */; };
 		653EBC3D1953E2F5007302F4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 653EBC3B1953E2F5007302F4 /* Main.storyboard */; };
+		65590433240C9D9200A0441E /* minesweeper.js in Resources */ = {isa = PBXBuildFile; fileRef = 65590432240C9D9200A0441E /* minesweeper.js */; };
 		65726111195CD95600C8C7D0 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65726110195CD95600C8C7D0 /* Security.framework */; };
 		65726113195CD96200C8C7D0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65726112195CD96200C8C7D0 /* SystemConfiguration.framework */; };
 		659B1BC21B1BD82D00445BF7 /* CustomSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659B1BC11B1BD82D00445BF7 /* CustomSettingsViewController.swift */; };
@@ -58,6 +59,7 @@
 		651759CE195267AE00E63305 /* Grid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Grid.h; sourceTree = "<group>"; };
 		651759CF195267AE00E63305 /* Grid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Grid.m; sourceTree = "<group>"; };
 		653EBC3B1953E2F5007302F4 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		65590432240C9D9200A0441E /* minesweeper.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = minesweeper.js; path = ../js/minesweeper.js; sourceTree = "<group>"; };
 		65726110195CD95600C8C7D0 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		65726112195CD96200C8C7D0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		659B1BC01B1BD82C00445BF7 /* Minesweeper-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Minesweeper-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 		6517598F1950F03200E63305 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				65590432240C9D9200A0441E /* minesweeper.js */,
 				65E0453123FB7EE70026D856 /* font.otf */,
 				65ABCF68195A0E0E0037EE2F /* Explosion.caf */,
 				65ABCF69195A0E0E0037EE2F /* Flag.caf */,
@@ -200,7 +203,7 @@
 				TargetAttributes = {
 					651759841950F03200E63305 = {
 						DevelopmentTeam = V447A2EZ7P;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1130;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.GameCenter = {
@@ -240,6 +243,7 @@
 				653EBC3D1953E2F5007302F4 /* Main.storyboard in Resources */,
 				65E8D45F19EDA87300FD9054 /* LaunchImage.storyboard in Resources */,
 				651759931950F03200E63305 /* InfoPlist.strings in Resources */,
+				65590433240C9D9200A0441E /* minesweeper.js in Resources */,
 				65E0453223FB7EE70026D856 /* font.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -393,25 +397,22 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8.0;
+				CURRENT_PROJECT_VERSION = 10.0;
 				DEVELOPMENT_TEAM = V447A2EZ7P;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Minesweeper/Minesweeper-Prefix.pch";
 				INFOPLIST_FILE = "Minesweeper/Minesweeper-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Minesweeper/Flurry",
-				);
-				MARKETING_VERSION = 2.2;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.danieljames.minesweeper;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MARKETING_VERSION = 4.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.developersbliss.Minesweeper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Minesweeper/Minesweeper-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -424,24 +425,21 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8.0;
+				CURRENT_PROJECT_VERSION = 10.0;
 				DEVELOPMENT_TEAM = V447A2EZ7P;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Minesweeper/Minesweeper-Prefix.pch";
 				INFOPLIST_FILE = "Minesweeper/Minesweeper-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Minesweeper/Flurry",
-				);
-				MARKETING_VERSION = 2.2;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.danieljames.minesweeper;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MARKETING_VERSION = 4.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.developersbliss.Minesweeper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Minesweeper/Minesweeper-Bridging-Header.h";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

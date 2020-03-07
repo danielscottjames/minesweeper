@@ -122,7 +122,7 @@
     
     // Help
     if (indexPath.section == 2) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.danielscottjames.com/minesweeper.html"]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.danielscottjames.com/minesweeper.html"] options:@{} completionHandler:nil];
     }
 }
 

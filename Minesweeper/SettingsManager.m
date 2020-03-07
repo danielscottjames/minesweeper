@@ -273,7 +273,7 @@
         
         NSString *iOS7AppStoreURL = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%d", APP_ID];
         
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:iOS7AppStoreURL]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:iOS7AppStoreURL] options:@{} completionHandler:nil];
     }
 }
 
