@@ -29,14 +29,10 @@
         [userDefaults setFloat:[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] floatValue] forKey:@"version"];
         
         [[SettingsManager sharedInstance] setupSettings];
-    }
-    
-    
-    //Check for update
-    if ([[userDefaults valueForKey:@"version"] floatValue] < [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] floatValue]) {
+    } else if ([[userDefaults valueForKey:@"version"] floatValue] < [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] floatValue]) {
         //Updated version
         [userDefaults setFloat:[[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] floatValue] forKey:@"version"];
-        [[SettingsManager sharedInstance] setupSettings];
+        [[SettingsManager sharedInstance] resetupSettings];
     }
     
 

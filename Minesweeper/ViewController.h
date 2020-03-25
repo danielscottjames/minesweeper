@@ -20,6 +20,7 @@ typedef NS_ENUM(NSInteger, SmileyState) {
 @property (weak, nonatomic) IBOutlet UILabel *bombsLabelBackground;
 @property (weak, nonatomic) IBOutlet UILabel *timerLabelBackground;
 @property (weak, nonatomic) IBOutlet UIButton *smileyButton;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *hintButton;
 
 @property (nonatomic, assign) SmileyState smileyState;
 @property (nonatomic, assign) int bombs;

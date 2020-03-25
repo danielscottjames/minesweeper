@@ -39,6 +39,11 @@ import JavaScriptCore
     
     @objc var state: GameState {
         didSet {
+            if (oldValue == .FirstMove) {
+                if let delegate = timerDelegate {
+                    delegate.timeChanged(time: 0);
+                }
+            }
             if (state == .Playing) {
                 startTimer();
             } else if let timer = _timer {
@@ -75,10 +80,17 @@ import JavaScriptCore
         time = 0;
         
         context.exceptionHandler = { context, exception in
-            print("JS EXCEPTION:")
-            print(exception!.toString()!)
+            print("JS EXCEPTION::\(exception!.toString()!)")
         }
+        
+        context.evaluateScript("var console = { log: function(message) { __log(message) } }")
+        let log: @convention(block) (String) -> Void = { message in
+            print("JS LOG::\(message)")
+        }
+        context.setObject(unsafeBitCast(log, to: AnyObject.self), forKeyedSubscript: "__log" as (NSCopying & NSObjectProtocol)?)
+        
         context.evaluateScript(MinesweeperGame.source);
+        
         model = (context.evaluateScript("MineSweeper")?.construct(withArguments: [width, height, mines]))!
     }
     
@@ -100,6 +112,14 @@ import JavaScriptCore
     
     @objc func tap(x: Int, y: Int) {
         model.invokeMethod("tap", withArguments: [["x":x, "y":y]]);
+    }
+    
+    @objc func hint() -> [Dictionary<String, Int>]? {
+        return model.invokeMethod("hint", withArguments: [])?.toArray() as? [Dictionary<String, Int>];
+    }
+    
+    @objc func undo() {
+        model.invokeMethod("undo", withArguments: []);
     }
     
     private func startTimer() {

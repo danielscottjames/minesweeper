@@ -98,6 +98,7 @@
             for (int j = 0; j < _game.height; j++) {
                 Square *square = [[Square alloc]
                                   initWithFrame:CGRectMake(i*_squareSize, j*_squareSize, _squareSize, _squareSize)];
+                square.parent = self;
                 square.number = 0;
                 square.indexPath = [NSIndexPath indexPathForRow:j inSection:i];
                 
@@ -127,9 +128,8 @@
         [self removeGestureRecognizer:r];
     }
 
-    
     //NSLog(@"Force Touch: %ld", (long)[[self traitCollection] forceTouchCapability]);
-    if ([[self traitCollection] respondsToSelector:@selector(forceTouchCapability)] &&  [[SettingsManager sharedInstance] get3DTouchEnabled] && [[self traitCollection] forceTouchCapability] == UIForceTouchCapabilityAvailable) {
+    if ([[self traitCollection] respondsToSelector:@selector(forceTouchCapability)] && [[SettingsManager sharedInstance] get3DTouchEnabled] && [[self traitCollection] forceTouchCapability] == UIForceTouchCapabilityAvailable) {
         // Use 3D Touch!
         _3DTouch = true;
         NSLog(@"Using 3D touch");
@@ -281,25 +281,14 @@
     
     // Setup the game after the first tap
     if (_game.state == GameStateFirstMove) {
-        [self firstTap:square];
+        [_game initModelWithX:square.indexPath.section y:square.indexPath.row];
+        [_game setState:GameStatePlaying];
     }
     
-    // Toggle between flags and questions
-    if (square.state == SquareStateFlagged) {
-        square.state = SquareStateQuestion;
-    } else if (square.state == SquareStateQuestion) {
-        square.state = SquareStateFlagged;
-    } else {
-        if (square.state == SquareStateNormal) {
-            [SoundManager.sharedInstance playSoundEffect:SoundEffectSelect];
-        }
-        
-        [self revealSquare:square];
-        [self checkWonGame];
-        [self calculateShadowPath];
-    }
+    [_game tapWithX:square.indexPath.section y:square.indexPath.row];
     
-    self.contentScaleFactor = [[NSNumber numberWithFloat:self.contentScaleFactor] floatValue];
+    [SoundManager.sharedInstance playSoundEffect:SoundEffectSelect];
+    [self syncBoard];
 }
 
 - (void) flag:(CGPoint)point {
@@ -316,16 +305,10 @@
     [_shadowView bringSubviewToFront:square];
     [square bounce];
     
-    if (square.state == SquareStateFlagged || square.state == SquareStateQuestion) {
-        square.state = SquareStateNormal;
-        self.title.bombs++;
-    } else if (square.state == SquareStateNormal) {
-        square.state = SquareStateFlagged;
-        self.title.bombs--;
-    }
-    [SoundManager.sharedInstance playSoundEffect:SoundEffectFlag];
+    [_game flagWithX:square.indexPath.section y:square.indexPath.row];
     
-    [self calculateShadowPath];
+    [SoundManager.sharedInstance playSoundEffect:SoundEffectFlag];
+    [self syncBoard];
 }
 
 - (void) singleTap:(UITapGestureRecognizer *)sender {
@@ -369,113 +352,118 @@
     }
 }
 
--(void) revealSquare:(Square *)square {
-    square.animationDelay = [self distanceBetweenPath:_delayPath andPath:square.indexPath]/12.f;
+- (void) hint {
+    NSArray<NSDictionary *> * data = [_game hint];
     
-    if (square.state == SquareStateNormal) {
-        square.state = SquareStateRevealed;
+    if (data) {
+        [self syncBoard];
         
-        [square removeFromSuperview];
-        [_gridView addSubview:square];
-        
-        if (square.number == 0) {
-            [self revealBlankNeighbors:square];
-        }
-        if (square.number <= -1 && _game.state == GameStatePlaying) {
-            square.number = -2;
-            [self gameOver:NO];
-        }
-    } else if (square.state == SquareStateRevealed && square.number > 0) {
-        int flaggedCount = 0;
-        int unrevealedCount = 0;
-        NSSet* neighbors = [self getNeighborSquares:square];
-        
-        for (Square *s in neighbors) {
-            if (s.state == SquareStateFlagged) {
-                flaggedCount++;
-            }
-            if (s.state == SquareStateNormal) {
-                unrevealedCount++;
-            }
-        }
-        
-        if (flaggedCount == square.number) {
-            if (unrevealedCount > 0) {
-                [SoundManager.sharedInstance playSoundEffect:SoundEffectSelect];
-            }
+        NSDictionary * _Nonnull firstPosition = [data firstObject];
+        if (firstPosition) {
+            int x = (int)[[firstPosition objectForKey:@"x"] integerValue];
+            int y = (int)[[firstPosition objectForKey:@"y"] integerValue];
+            Square *square = [self getSquareAtSection:x andRow:y];
             
-            for (Square *s in neighbors) {
-                if (s.state == SquareStateNormal) {
-                    [self revealSquare:s];
+            CGRect __block frame = square.frame;
+            [[self getNeighborSquares:square] enumerateObjectsUsingBlock:^(Square * obj, BOOL * _Nonnull stop) {
+                frame = CGRectUnion(frame, obj.frame);
+            }];
+            
+            BOOL delay = CGRectIntersectsRect(self.scrollView.bounds, frame);
+            
+            [UIView animateWithDuration:0.1 animations:^{
+                [self.scrollView scrollRectToVisible:frame animated:FALSE];
+            } completion:^(BOOL finished) {
+                if (delay) {
+                    [NSTimer scheduledTimerWithTimeInterval:0.05 repeats:NO block:^(NSTimer *timer) {
+                        [self animateHints:data];
+                    }];
+                } else {
+                    [self animateHints:data];
+                }
+            }];
+        }
+    }
+}
+
+- (void) animateHints: (NSArray<NSDictionary *> *) data {
+    [data enumerateObjectsUsingBlock:^(NSDictionary * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        int x = (int)[[obj objectForKey:@"x"] integerValue];
+        int y = (int)[[obj objectForKey:@"y"] integerValue];
+        
+        Square *square = [self getSquareAtSection:x andRow:y];
+        
+        [_shadowView bringSubviewToFront:square];
+        [_gridView bringSubviewToFront:square];
+        if (square.number < 0) {
+            [square bounceFlag];
+        } else {
+            [square bounce];
+        }
+    }];
+}
+
+- (void) undo {
+    if (_game.state == GameStateFinished) {
+        NSDictionary *state = [_game getGameState];
+        NSString *status = [[state objectForKey:@"status"] stringValue];
+        if ([status isEqualToString:@"lose"]) {
+            _game.isPaused = false;
+            [_game undo];
+            [self syncBoard];
+            [self setupInput];
+            self.title.smileyState = SmileyStateNormal;
+            [_game setState:GameStatePlaying];
+        }
+    }
+}
+
+- (void) syncBoard {
+    NSArray * board = [_game getBoard];
+    
+    [board enumerateObjectsUsingBlock:^(id  _Nonnull row, NSUInteger y, BOOL * _Nonnull stop) {
+        [row enumerateObjectsUsingBlock:^(NSDictionary* _Nonnull data, NSUInteger x, BOOL * _Nonnull stop) {
+            Square *square = [self getSquareAtSection:(int)x andRow:(int)y];
+            
+            square.highlight = [[data objectForKey:@"highlight"] boolValue];
+            square.number = (int)[[data objectForKey:@"value"] integerValue];
+            NSInteger state = [[data objectForKey:@"state"] integerValue];
+            
+            // Sync state
+            // This animates so we don't want to unneccessarily call it
+            if (square.state != state) {
+                square.animationDelay = [self distanceBetweenPath:_delayPath andPath:square.indexPath]/12.f;
+                
+                if (square.state == SquareStateRevealed && state != SquareStateRevealed) {
+                    [square setState:SquareStateNormal];
+                    [square removeFromSuperview];
+                    [_shadowView addSubview:square];
+                }
+                
+                [square setState:state];
+                if (state == SquareStateRevealed) {
+                    [square removeFromSuperview];
+                    [_gridView addSubview:square];
                 }
             }
-        }
-    }
-}
-
-- (void) firstTap:(Square *)square {
-    [_game setState:GameStatePlaying];
+        }];
+    }];
     
-    // Don't make the first tile a bomb, nor its neighbors. (Doing this for neighbors isn't valid WinXP )
-    NSMutableSet *protectedSquares = [[self getNeighborSquares:square] mutableCopy];
-    [protectedSquares addObject:square];
-    
-    
-    // Setup grid
-    
-    // Determine which squares will be bombs
-    int bombsPlaced = 0;
-    while (bombsPlaced < _game.mines) {
-        int i = arc4random()%_game.width;
-        int j = arc4random()%_game.height;
-        
-        
-        Square *bombSquare = [self getSquareAtSection:i andRow:j];
-        
-        if (![protectedSquares containsObject:bombSquare]) {
-            [protectedSquares addObject:bombSquare];
-            bombSquare.number = -1;
-            bombsPlaced++;
-            
-            // increment the count for all adjacent squares
-            NSSet *neighbors = [self getNeighborSquares:bombSquare];
-            for (Square *s in neighbors) {
-                if (s.number >= 0) {
-                    s.number++;
-                }
-            }
-        }
-    }
-}
-
-- (void) revealBlankNeighbors:(Square *)square {
-    NSSet* neighbors = [self getNeighborSquares:square];
-    
-    for (Square *s in neighbors) {
-        if (s.number >= 0 && s.state == SquareStateNormal) {
-            [self revealSquare:s];
-        }
-    }
-}
-
-- (void) checkWonGame {
-    if (!(_game.state == GameStatePlaying)) {
-        return;
+    NSDictionary *state = [_game getGameState];
+    _title.bombs = (int)[[state objectForKey:@"mines"] integerValue];
+    NSString *status = [[state objectForKey:@"status"] stringValue];
+    if (![status isEqualToString:@"playing"]) {
+        [self gameOver:[status isEqualToString:@"win"]];
     }
     
-    for (int i = 0; i < _game.width; i++) {
-        for (int j = 0; j < _game.height; j++) {
-            Square *square = [self getSquareAtSection:i andRow:j];
-            if (square.number >= 0 && !(square.state == SquareStateRevealed)) {
-                return;
-            }
-        }
-    }
-    
-    [self gameOver:true];
+    self.contentScaleFactor = [[NSNumber numberWithFloat:self.contentScaleFactor] floatValue];
+    [self calculateShadowPath];
 }
 
 - (void) gameOver: (bool) won {
+    if (_game.state == GameStateFinished) {
+        return;
+    }
     [_game setState:GameStateFinished];
     
     // For record keeping.
@@ -496,32 +484,9 @@
         
         // Report time
         [[SettingsManager sharedInstance] reportHighScore:_game.time];
-        
-        // Add flags to the remaining unrevealed squares. (You win by revealing all non bombs, not by flagging them all)
-        for (int i = 0; i < _game.width; i++) {
-            for (int j = 0; j < _game.height; j++) {
-                Square *square = [self getSquareAtSection:i andRow:j];
-                if ((square.number == -1 && square.state == SquareStateNormal)) {
-                    square.state = SquareStateFlagged;
-                }
-            }
-        }
     } else {
         self.title.smileyState = SmileyStateLose;
         [SoundManager.sharedInstance playSoundEffect:SoundEffectExplosion];
-        
-        // Reveal all the squares
-        for (int i = 0; i < _game.width; i++) {
-            for (int j = 0; j < _game.height; j++) {
-                Square *square = [self getSquareAtSection:i andRow:j];
-                if ((square.state == SquareStateNormal)) {
-                    [self revealSquare:[self getSquareAtSection:i andRow:j]];
-                }
-                if ((square.state == SquareStateFlagged && square.number >= 0)) {
-                    square.state = SquareStateFlaggedWrong;
-                }
-            }
-        }
     }
 }
 
@@ -541,6 +506,23 @@
          postNotificationName:@"NewGame"
          object:nil ];
     }
+}
+
+- (NSSet *) getNeighborSquares:(Square *)square {
+    int row = (int)square.indexPath.row;
+    int section = (int)square.indexPath.section;
+    
+    NSMutableSet *neighbors = [[NSMutableSet alloc] init];
+    
+    for (int i = section-1; i <= section+1; i++) {
+        for (int j = row-1; j <= row+1; j++) {
+            if ((i >= 0 && j >= 0 && i < _game.width && j < _game.height && !(i == section && j == row))) {
+                [neighbors addObject:[self getSquareAtSection:i andRow:j]];
+            }
+        }
+    }
+    
+    return neighbors;
 }
 
 - (void) calculateShadowPath {
@@ -565,35 +547,6 @@
     }
     
     _shadowView.layer.shadowPath = path.CGPath;
-}
-
-- (void) setIsPaused:(BOOL)isPaused {
-//    _isPaused = isPaused;
-//    
-//    if (self.isPlaying) {
-//        if (self.isPaused) {
-//            [_title stopTimer];
-//        } else {
-//            [_title startTimer];
-//        }
-//    }
-}
-
-- (NSSet *) getNeighborSquares:(Square *)square {
-    int row = (int)square.indexPath.row;
-    int section = (int)square.indexPath.section;
-    
-    NSMutableSet *neighbors = [[NSMutableSet alloc] init];
-    
-    for (int i = section-1; i <= section+1; i++) {
-        for (int j = row-1; j <= row+1; j++) {
-            if ((i >= 0 && j >= 0 && i < _game.width && j < _game.height && !(i == section && j == row))) {
-                [neighbors addObject:[self getSquareAtSection:i andRow:j]];
-            }
-        }
-    }
-    
-    return neighbors;
 }
 
 - (Square *) getSquareAtSection:(int)i andRow:(int)j {

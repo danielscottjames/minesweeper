@@ -14,9 +14,12 @@
 @interface Grid : UIView
 
 @property (nonatomic, retain) ViewController* title;
+@property (nonatomic, retain) UIScrollView* scrollView;
 
 @property (nonatomic, strong) NSMutableArray *squares;
 
-- (id) initWithGame:(MinesweeperGame *)game withSize:(UIUserInterfaceSizeClass)s;
+- (id) initWithGame:(MinesweeperGame *)game withSize:(UIUserInterfaceSizeClass)size;
+- (void) hint;
+- (void) undo;
 
 @end

@@ -19,6 +19,7 @@ typedef NS_ENUM(NSInteger, DifficultyLevel) {
 + (SettingsManager *)sharedInstance;
 
 - (void) setupSettings;
+- (void) resetupSettings;
 - (void) gameOver:(BOOL)won;
 
 

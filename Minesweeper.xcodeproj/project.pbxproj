@@ -136,9 +136,9 @@
 				65CFE9701C3312190021E067 /* MinesweeperGame.swift */,
 				651759A01950F03200E63305 /* ViewController.h */,
 				651759A11950F03200E63305 /* ViewController.m */,
-				651759CE195267AE00E63305 /* Grid.h */,
 				65E0451F23FB442A0026D856 /* TitleView.swift */,
 				65E0452B23FB69730026D856 /* InsetLabel.swift */,
+				651759CE195267AE00E63305 /* Grid.h */,
 				651759CF195267AE00E63305 /* Grid.m */,
 				651759C81950FDAF00E63305 /* Square.h */,
 				651759C91950FDAF00E63305 /* Square.m */,
@@ -397,7 +397,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10.0;
+				CURRENT_PROJECT_VERSION = 11.0;
 				DEVELOPMENT_TEAM = V447A2EZ7P;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Minesweeper/Minesweeper-Prefix.pch";
@@ -425,7 +425,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10.0;
+				CURRENT_PROJECT_VERSION = 11.0;
 				DEVELOPMENT_TEAM = V447A2EZ7P;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Minesweeper/Minesweeper-Prefix.pch";

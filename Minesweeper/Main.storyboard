@@ -597,7 +597,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="1" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Dg-LH-Oh3" customClass="InsetLabel" customModule="Minesweeper" customModuleProvider="target">
-                                    <rect key="frame" x="4.6666666666666643" y="3.3333333333333321" width="56" height="33.666666666666671"/>
+                                    <rect key="frame" x="4.6666666666666643" y="1.3333333333333321" width="56" height="37.666666666666671"/>
                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="PeL-7Q-AR8"/>
@@ -615,7 +615,7 @@
                                     </userDefinedRuntimeAttributes>
                                 </label>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="1" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FEA-xM-G3k" customClass="InsetLabel" customModule="Minesweeper" customModuleProvider="target">
-                                    <rect key="frame" x="4.6666666666666643" y="3.3333333333333321" width="56" height="33.666666666666671"/>
+                                    <rect key="frame" x="4.6666666666666643" y="1.3333333333333321" width="56" height="37.666666666666671"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="kfK-Ma-MAd"/>
                                     </constraints>
@@ -646,7 +646,7 @@
                                     </connections>
                                 </button>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W2i-IW-ng1" customClass="InsetLabel" customModule="Minesweeper" customModuleProvider="target">
-                                    <rect key="frame" x="114.66666666666669" y="3.6666666666666679" width="56" height="32.666666666666657"/>
+                                    <rect key="frame" x="114.66666666666669" y="1.6666666666666679" width="56" height="36.666666666666657"/>
                                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="3vg-QS-9Sw"/>
@@ -664,7 +664,7 @@
                                     </userDefinedRuntimeAttributes>
                                 </label>
                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OiK-iR-a28" customClass="InsetLabel" customModule="Minesweeper" customModuleProvider="target">
-                                    <rect key="frame" x="114.66666666666669" y="3.6666666666666679" width="56" height="32.666666666666657"/>
+                                    <rect key="frame" x="114.66666666666669" y="1.6666666666666679" width="56" height="36.666666666666657"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="56" id="rCm-sE-O8M"/>
                                     </constraints>
@@ -695,10 +695,16 @@
                                 <constraint firstItem="FEA-xM-G3k" firstAttribute="centerY" secondItem="BOU-R1-foU" secondAttribute="centerY" id="yDI-sF-dcJ"/>
                             </constraints>
                         </view>
+                        <barButtonItem key="rightBarButtonItem" title="Hint" image="lightbulb" catalog="system" id="SxZ-By-Btf">
+                            <connections>
+                                <action selector="hintButtonPressed:" destination="vXZ-lx-hvc" id="NxH-YV-SNB"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="bombsLabel" destination="FEA-xM-G3k" id="mOs-CG-RIa"/>
                         <outlet property="bombsLabelBackground" destination="4Dg-LH-Oh3" id="Bzu-Wu-63K"/>
+                        <outlet property="hintButton" destination="SxZ-By-Btf" id="FrV-pF-rfx"/>
                         <outlet property="scrollView" destination="xKe-Q9-krT" id="vTk-oM-Row"/>
                         <outlet property="smileyButton" destination="BOU-R1-foU" id="9zH-t3-vdX"/>
                         <outlet property="timerLabel" destination="OiK-iR-a28" id="feF-Ki-5G0"/>
@@ -712,6 +718,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="lightbulb" catalog="system" width="56" height="64"/>
         <image name="line.horizontal.3" catalog="system" width="64" height="32"/>
     </resources>
 </document>

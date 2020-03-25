@@ -40,10 +40,20 @@
     _number = number;
     
     if (number == -1) {
-        _mine.image = [UIImage imageNamed:@"Mine"];
+        if (_highlight) {
+            _mine.image = [UIImage imageNamed:@"MineRed"];
+        } else {
+            _mine.image = [UIImage imageNamed:@"Mine"];
+        }
     }
-    if (number == -2) {
-        _mine.image = [UIImage imageNamed:@"MineRed"];
+}
+
+- (void) setHighlight:(BOOL)highlight {
+    _highlight = highlight;
+    
+    // Update the image
+    if (_state == SquareStateFlagged) {
+        [self setState:SquareStateFlagged];
     }
 }
 
@@ -57,11 +67,12 @@
     
     switch (_state) {
         case SquareStateFlagged:
-            [self prepareImage:@"Flag"];
-            break;
-        case SquareStateFlaggedWrong:
-            [self prepareImage:@"FlagRed"];
-            _image.alpha = 1;
+            if (_highlight) {
+                [self prepareImage:@"FlagRed"];
+                _image.alpha = 1;
+            } else {
+                [self prepareImage:@"Flag"];
+            }
             break;
         case SquareStateQuestion:
             [self prepareImage:@"QuestionMark"];
@@ -156,6 +167,15 @@
     [self.layer addAnimation:bounceAnimation forKey:@"bounce"];
     
     self.layer.transform = CATransform3DIdentity;
+}
+
+- (void) bounceFlag {
+    SquareState oldState = _state;
+    [self setState:SquareStateFlagged];
+    [self bounce];
+    [NSTimer scheduledTimerWithTimeInterval:0.31 repeats:NO block:^(NSTimer *timer) {
+        [self setState:oldState];
+    }];
 }
 
 - (void) bounceWithDelay:(float)delay {

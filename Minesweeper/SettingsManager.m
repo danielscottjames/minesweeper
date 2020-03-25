@@ -64,6 +64,14 @@
     [self giveInstructions];
 }
 
+- (void) resetupSettings {
+    // Stats
+    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"wins"];
+    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"loses"];
+    
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (void) set3DTouchEnabled:(BOOL)enabled {
     [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:@"3DTouchEnabled"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -106,7 +114,7 @@
         NSInteger wins = [[NSUserDefaults standardUserDefaults] integerForKey:@"wins"];
         [[NSUserDefaults standardUserDefaults] setInteger:++wins forKey:@"wins"];
         
-        if (wins == 4) {
+        if (wins == 2) {
             [self promptReview];
         }
     } else {
@@ -243,9 +251,9 @@
 - (void) giveInstructions {
     NSString *message;
     if ([self get3DTouchEnabled]) {
-        message = @"Tap to reveal a square.\nPress firmly to flag.\nPress smiley for new game.\n\nYou may disabled 3D touch in the menu.";
+        message = @"Tap to reveal a square.\nPress firmly to flag.\nPress the smiley button for new game.\n\nYou may disable 3D touch in the menu.";
     } else {
-        message = @"Tap to reveal a square.\nHold to flag.\nPress smiley for new game.";
+        message = @"Tap to reveal a square.\nHold to flag.\nPress the smiley button for new game.";
     }
     
     // Instructions...

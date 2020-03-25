@@ -52,11 +52,23 @@
                                             selector:@selector(newGame)
                                                 name:@"NewGame"
                                               object:nil];
+    
+    [self.hintButton setEnabled:FALSE];
 }
 
 - (IBAction)smileButtonPressed:(id)sender {
     [SoundManager.sharedInstance playSoundEffect:SoundEffectSelect];
     [self promptNewGame];
+}
+
+- (IBAction)hintButtonPressed:(id)sender {
+    if (_grid && _game) {
+        if (_game.state == GameStatePlaying) {
+            [_grid hint];
+        } else if (_game.state == GameStateFinished) {
+            [_grid undo];
+        }
+    }
 }
 
 - (void) dealloc {
@@ -152,6 +164,7 @@
     
     _grid = [[Grid alloc] initWithGame:_game withSize:self.traitCollection.horizontalSizeClass];
     _grid.title = self;
+    _grid.scrollView = self.scrollView;
     [self resetWithBombs:(int)_game.mines];
     _game.timerDelegate = self;
     
@@ -249,6 +262,10 @@
         time = 999;
     }
     
+    if (time <= 1 && _game.state != GameStateFirstMove) {
+        [self.hintButton setEnabled:TRUE];
+    }
+    
     if (time < 10) {
         self.timerLabel.text = [NSString stringWithFormat:@"  %ld", (long)time];
     } else if (time < 100) {
@@ -267,6 +284,7 @@
             break;
         case SmileyStateLose:
             self.smileyButton.titleLabel.text = @"😵";
+            self.hintButton.image = [UIImage systemImageNamed:@"arrow.uturn.left"];
             break;
         case SmileyStateWin:
             self.smileyButton.titleLabel.text = @"😎";
@@ -275,6 +293,7 @@
         case SmileyStateNormal:
         default:
             self.smileyButton.titleLabel.text = @"😀";
+            self.hintButton.image = [UIImage systemImageNamed:@"lightbulb"];
     }
 }
 
