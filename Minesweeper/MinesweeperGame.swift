@@ -69,7 +69,7 @@ import JavaScriptCore
     @objc private(set) var time :Int = 0;
     private var _timer: Timer?;
     
-    @objc init(withDifficulty _difficulty:DifficultyLevel, withWidth _width:Int, withHeight _height:Int, withMines _mines:Int) {
+    @objc init(withDifficulty _difficulty:DifficultyLevel, withWidth _width:Int, withHeight _height:Int, withMines _mines:Int, withLuck _luck:Bool, withEmptyFirstTap _emptyFirstTap:Bool, withRandomHints _randomHints:Bool) {
         difficulty = _difficulty;
         width = _width;
         height = _height;
@@ -91,7 +91,7 @@ import JavaScriptCore
         
         context.evaluateScript(MinesweeperGame.source);
         
-        model = (context.evaluateScript("MineSweeper")?.construct(withArguments: [width, height, mines]))!
+        model = (context.evaluateScript("MineSweeper")?.construct(withArguments: [width, height, mines, _luck, _emptyFirstTap, _randomHints]))!
     }
     
     @objc func initModel(x: Int, y: Int) {

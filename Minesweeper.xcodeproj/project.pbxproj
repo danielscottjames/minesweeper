@@ -29,8 +29,9 @@
 		65ABCF6D195A101B0037EE2F /* Select.caf in Resources */ = {isa = PBXBuildFile; fileRef = 65ABCF6A195A0E0E0037EE2F /* Select.caf */; };
 		65ABCF72195A2B380037EE2F /* SettingsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 65ABCF71195A2B380037EE2F /* SettingsManager.m */; };
 		65CFE9671C30DCF30021E067 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CFE9661C30DCF30021E067 /* SoundManager.swift */; };
-		65CFE96F1C31F3710021E067 /* AdvancedSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CFE96E1C31F3710021E067 /* AdvancedSettingsTableViewController.swift */; };
+		65CFE96F1C31F3710021E067 /* ControlSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CFE96E1C31F3710021E067 /* ControlSettingsTableViewController.swift */; };
 		65CFE9711C3312190021E067 /* MinesweeperGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65CFE9701C3312190021E067 /* MinesweeperGame.swift */; };
+		65E04108242FF2FF00485D24 /* AdvancedSettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E04107242FF2FF00485D24 /* AdvancedSettingsTableViewController.swift */; };
 		65E0452023FB442A0026D856 /* TitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E0451F23FB442A0026D856 /* TitleView.swift */; };
 		65E0452C23FB69730026D856 /* InsetLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65E0452B23FB69730026D856 /* InsetLabel.swift */; };
 		65E0453223FB7EE70026D856 /* font.otf in Resources */ = {isa = PBXBuildFile; fileRef = 65E0453123FB7EE70026D856 /* font.otf */; };
@@ -70,8 +71,9 @@
 		65ABCF70195A2B380037EE2F /* SettingsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsManager.h; sourceTree = "<group>"; };
 		65ABCF71195A2B380037EE2F /* SettingsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsManager.m; sourceTree = "<group>"; };
 		65CFE9661C30DCF30021E067 /* SoundManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
-		65CFE96E1C31F3710021E067 /* AdvancedSettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsTableViewController.swift; sourceTree = "<group>"; };
+		65CFE96E1C31F3710021E067 /* ControlSettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ControlSettingsTableViewController.swift; sourceTree = "<group>"; };
 		65CFE9701C3312190021E067 /* MinesweeperGame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MinesweeperGame.swift; sourceTree = "<group>"; };
+		65E04107242FF2FF00485D24 /* AdvancedSettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsTableViewController.swift; sourceTree = "<group>"; };
 		65E0451F23FB442A0026D856 /* TitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleView.swift; sourceTree = "<group>"; };
 		65E0452B23FB69730026D856 /* InsetLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetLabel.swift; sourceTree = "<group>"; };
 		65E0453123FB7EE70026D856 /* font.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = font.otf; sourceTree = "<group>"; };
@@ -145,7 +147,8 @@
 				650EBDE91954B9EA00B02922 /* SettingsTableViewController.h */,
 				650EBDEA1954B9EA00B02922 /* SettingsTableViewController.m */,
 				659B1BC11B1BD82D00445BF7 /* CustomSettingsViewController.swift */,
-				65CFE96E1C31F3710021E067 /* AdvancedSettingsTableViewController.swift */,
+				65CFE96E1C31F3710021E067 /* ControlSettingsTableViewController.swift */,
+				65E04107242FF2FF00485D24 /* AdvancedSettingsTableViewController.swift */,
 				653EBC3B1953E2F5007302F4 /* Main.storyboard */,
 				65E8D45E19EDA87300FD9054 /* LaunchImage.storyboard */,
 				651759A31950F03200E63305 /* Images.xcassets */,
@@ -259,10 +262,11 @@
 				651759CA1950FDAF00E63305 /* Square.m in Sources */,
 				65CFE9711C3312190021E067 /* MinesweeperGame.swift in Sources */,
 				65ABCF72195A2B380037EE2F /* SettingsManager.m in Sources */,
+				65E04108242FF2FF00485D24 /* AdvancedSettingsTableViewController.swift in Sources */,
 				651759D0195267AE00E63305 /* Grid.m in Sources */,
 				651759A21950F03200E63305 /* ViewController.m in Sources */,
 				651759991950F03200E63305 /* AppDelegate.m in Sources */,
-				65CFE96F1C31F3710021E067 /* AdvancedSettingsTableViewController.swift in Sources */,
+				65CFE96F1C31F3710021E067 /* ControlSettingsTableViewController.swift in Sources */,
 				651759951950F03200E63305 /* main.m in Sources */,
 				65E0452C23FB69730026D856 /* InsetLabel.swift in Sources */,
 				659B1BC21B1BD82D00445BF7 /* CustomSettingsViewController.swift in Sources */,
@@ -397,7 +401,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11.0;
+				CURRENT_PROJECT_VERSION = 14.0;
 				DEVELOPMENT_TEAM = V447A2EZ7P;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Minesweeper/Minesweeper-Prefix.pch";
@@ -405,7 +409,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 4.0;
+				MARKETING_VERSION = 4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.developersbliss.Minesweeper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -425,7 +429,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11.0;
+				CURRENT_PROJECT_VERSION = 14.0;
 				DEVELOPMENT_TEAM = V447A2EZ7P;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Minesweeper/Minesweeper-Prefix.pch";
@@ -433,7 +437,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 4.0;
+				MARKETING_VERSION = 4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.developersbliss.Minesweeper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";

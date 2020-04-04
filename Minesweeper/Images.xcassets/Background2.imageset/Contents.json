@@ -5,31 +5,46 @@
       "scale" : "1x"
     },
     {
+      "filename" : "urban grunge geometric seamless pattern 140115.png",
+      "idiom" : "universal",
       "resizing" : {
-        "mode" : "9-part",
-        "center" : {
-          "mode" : "tile",
-          "width" : 500,
-          "height" : 500
-        },
         "cap-insets" : {
           "bottom" : 0,
-          "top" : 0,
+          "left" : 0,
           "right" : 0,
-          "left" : 0
-        }
+          "top" : 0
+        },
+        "center" : {
+          "height" : 500,
+          "mode" : "tile",
+          "width" : 500
+        },
+        "mode" : "9-part"
       },
-      "idiom" : "universal",
-      "filename" : "urban grunge geometric seamless pattern 140115.png",
       "scale" : "2x"
     },
     {
+      "filename" : "urban grunge geometric seamless pattern 140115-3.png",
       "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 0,
+          "left" : 0,
+          "right" : 0,
+          "top" : 0
+        },
+        "center" : {
+          "height" : 2000,
+          "mode" : "tile",
+          "width" : 2000
+        },
+        "mode" : "9-part"
+      },
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

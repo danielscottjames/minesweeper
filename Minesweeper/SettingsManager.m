@@ -44,7 +44,7 @@
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"vibrate"];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"soundEffects"];
     
-    // Advanced
+    // Controls
     [[NSUserDefaults standardUserDefaults] setBool:[[NSUserDefaults standardUserDefaults] boolForKey:@"3DTouchCapabilityAvailable"] forKey:@"3DTouchEnabled"];
     [[NSUserDefaults standardUserDefaults] setFloat:0.66 forKey:@"3DTouchSensitivity"];
     [[NSUserDefaults standardUserDefaults] setFloat:0.15 forKey:@"HoldDuration"];
@@ -58,6 +58,12 @@
     [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"wins"];
     [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"loses"];
     
+    // Advanced Settings
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"luck"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"emptyFirstTap"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"questionMarks"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"randomHints"];
+    
     
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -65,10 +71,48 @@
 }
 
 - (void) resetupSettings {
-    // Stats
-    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"wins"];
-    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:@"loses"];
+    // Advanced Settings
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"luck"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"emptyFirstTap"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"questionMarks"];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"randomHints"];
     
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (BOOL) getLuckEnabled {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"luck"];
+}
+
+- (BOOL) getEmptyFirstTapEnabled {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"emptyFirstTap"];
+}
+
+- (BOOL) getQuestionMarksEnabled {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"questionMarks"];
+}
+
+- (BOOL) getRandomHintsEnabled {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"randomHints"];
+}
+
+- (void) setLuckEnabled:(BOOL)enabled {
+    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:@"luck"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void) setEmptyFirstTapEnabled:(BOOL)enabled {
+    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:@"emptyFirstTap"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void) setQuestionMarksEnabled:(BOOL)enabled {
+    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:@"questionMarks"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void) setRandomHintsEnabled:(BOOL)enabled {
+    [[NSUserDefaults standardUserDefaults] setBool:enabled forKey:@"randomHints"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

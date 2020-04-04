@@ -31,7 +31,7 @@ abstract class Point {
     }
 
     static distance(p1: Point, p2: Point) {
-        return (p1.x-p2.x)**2 + (p1.y-p2.y)**2;
+        return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
     }
 }
 
@@ -48,6 +48,7 @@ const MINE = -1;
 type SquareValue = typeof MINE | typeof EMPTY | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
 let CALL_LIMIT = 2 ** 12;
+let SHUFFLE_LIMIT = 2 ** 14;
 type ProbabilityMap = Map<Square, number> & { __permutations?: number, __recursiveCalls?: number };
 
 function logProbabilityMap(map: ProbabilityMap) {
@@ -80,12 +81,16 @@ class Square {
 
 class MineSweeper {
     private squares = new Map<string, Square>();
-    public luck = true;
 
     /** For providing hints close to the last point */
-    public lastTapPoint: Point = {x: 0, y: 0};
+    public lastTapPoint: Point = { x: 0, y: 0 };
 
-    constructor(public readonly width: number, public readonly height: number, public readonly mines: number) {
+    constructor(public readonly width: number,
+                public readonly height: number,
+                public readonly mines: number,
+                public readonly luck = true,
+                public readonly emptyFirstTap = true,
+                public readonly randomHints = true,) {
         if (mines < 1 || mines >= (width * height - 9) || width < 1 || height < 1) {
             throw new Error('Invalid starting game configuration!');
         }
@@ -123,7 +128,7 @@ class MineSweeper {
             // The clicked square and its neighbors can not be bombs
             const safe = new Set<Square>([
                 clickedSquare,
-                ...clickedSquare.neighbors,
+                ...(this.emptyFirstTap ? clickedSquare.neighbors : []),
             ]);
 
             let placedMines = 0;
@@ -179,6 +184,10 @@ class MineSweeper {
             return;
         } else {
             square.highlight = false;
+
+            if (square == this.lastHint) {
+                this.lastHint = undefined;
+            }
 
             if (square.state == SquareState.Unknown) {
                 square.state = SquareState.Flagged;
@@ -270,6 +279,10 @@ class MineSweeper {
     }
 
     public hint(): Point[] | undefined {
+        if (this.lastHint) {
+            return [this.lastHint.point];
+        }
+
         const simpleHint = this.simpleHint();
         if (simpleHint.length) {
             return simpleHint.map(h => h.point);
@@ -287,11 +300,16 @@ class MineSweeper {
             }
 
             // Show the least likely squares (which would be guaranteed to not be a mine due to hint mode)
-            const leastProbable = [...filter(filter([...probs.entries()].sort(([,p1],[,p2]) => p1-p2), ([s]) => s.state != SquareState.Revealed), s => s[0].value != MINE)];
-            if (leastProbable.length) {
+            const leastProbable = [...filter(filter(shuffle([...probs.entries()])
+                                    .sort(([, p1], [, p2]) => p1 - p2), ([s]) => s.state != SquareState.Revealed), s => s[0].value != MINE)];
+            if (leastProbable.length 
+                // If luck is disabled, only show the least probable if its guaranteed to not be a mine.
+                && (this.luck || leastProbable[0][1] == 0)) {
+                this.lastHint = leastProbable[0]![0];
                 return [leastProbable[0]![0].point];
             } else {
-                return [this.randomHint()!.point];
+                const randomHint = this.randomHint();
+                return randomHint ? [randomHint.point] : undefined;
             }
         } catch (e) {
             console.log(`${e}`);
@@ -301,14 +319,27 @@ class MineSweeper {
         if (advancedHint.length) {
             return [advancedHint[0].point];
         } else {
-            return [this.randomHint()!.point];
+            const randomHint = this.randomHint();
+            return randomHint ? [randomHint.point] : undefined;
         }
     }
 
+    private lastHint: Square|undefined = undefined;
     private randomHint() {
-        const hint = [...filter(filter(this.squares.values(), s => !(s.state != SquareState.Unknown)), s => !!find(s.neighbors.values(), n => n.state != SquareState.Unknown))]
-        .sort((a, b) => Point.distance(a.point, this.lastTapPoint) - Point.distance(b.point, this.lastTapPoint))[0];
+        if (!this.randomHints) {
+            return undefined;
+        }
+
+        const hint = shuffle([...filter(filter(this.squares.values(), s => !(s.state != SquareState.Unknown)), s => !!find(s.neighbors.values(), n => n.state != SquareState.Unknown))])
+            .sort((a, b) => {
+                const aRevealed = count(a.neighbors, n => n.state == SquareState.Revealed);
+                const bRevealed = count(b.neighbors, n => n.state == SquareState.Revealed);
+
+                return (bRevealed - aRevealed) * 10000 + Point.distance(a.point, this.lastTapPoint) - Point.distance(b.point, this.lastTapPoint);
+            })[0];
         if (hint) {
+            this.lastHint = hint;
+            console.log(`Random Hint @ ${hint.name}`);
             if (hint.value == MINE) {
                 this.addMustBeMine(hint);
             } else {
@@ -332,7 +363,7 @@ class MineSweeper {
             return incorrectlyFlagged;
         }
 
-        this.withObviousFlags(() => {});
+        this.withObviousFlags(() => { });
 
         let hints = [...this.nextObviousFlag(), ...this.nextObviousTap()];
         if (hints.length) {
@@ -367,6 +398,8 @@ class MineSweeper {
             try {
                 // Ensure we have the most up to date info
                 this.calculateProbs();
+            } catch (e) {
+                
             } finally {
                 forEach(this.squares.values(), square => {
                     if (square.state == SquareState.Flagged) {
@@ -403,6 +436,10 @@ class MineSweeper {
     }
 
     private reveal(square: Square) {
+        if (square == this.lastHint) {
+            this.lastHint = undefined;
+        }
+
         if (square.value == MINE) {
             square.state = SquareState.Revealed;
             square.highlight = true;
@@ -600,7 +637,7 @@ class MineSweeper {
             let edgesRemaining = edges;
     
             let i = 0;
-            while (i++ < CALL_LIMIT) {
+            while (i++ < SHUFFLE_LIMIT) {
                 // It's somewhat important that this loop doesn't scale with the size of the board
                 if (edgesRemaining.length) {
                     edgesRemaining = edgesRemaining.filter(s => !tempMines.has(s) && this.couldBeAMine(s, tempMines));
@@ -639,10 +676,10 @@ class MineSweeper {
                 }
             }
     
-            if (i > CALL_LIMIT) {
-                console.log(`Failed to shuffle the board in ${i}/${CALL_LIMIT} loops`);
+            if (i > SHUFFLE_LIMIT) {
+                console.log(`Failed to shuffle the board in ${i}/${SHUFFLE_LIMIT} loops`);
             } else {
-                console.log(`Shuffle the board in ${i}/${CALL_LIMIT} loops`);
+                console.log(`Shuffle the board in ${i}/${SHUFFLE_LIMIT} loops`);
             }
         });
     }
@@ -731,7 +768,7 @@ class MineSweeper {
         return this.withObviousFlags(() => {
             let remaining = [...filter(this.squares.values(), square => isUnknownOrQuestion(square.state))];
             let minesRemaining = (this.mines - this.mustBeMines.size);
-            if (remaining.length > 10) {
+            if (remaining.length > 12 && minesRemaining > 12) {
                 // Only consider edge pieces
                 remaining = remaining.filter(s => !!find(s.neighbors, n => n.state == SquareState.Revealed));
                 minesRemaining = -1;
@@ -751,7 +788,7 @@ class MineSweeper {
         });
     }
 
-    private _calculateProbs(remaining: Square[], i: number, probs: ProbabilityMap, tempMinesLeft: number, tempMines: Set<Square>): boolean {
+    private _calculateProbs(remaining: Square[], i: number, probs: ProbabilityMap, tempMinesLeft: number, tempMines: Set<Square>) {
         probs.__recursiveCalls = (probs.__recursiveCalls || 0) + 1;
         if (probs.__recursiveCalls == CALL_LIMIT) {
             throw new Error(`Too many recursive calls (${CALL_LIMIT}) while calculating game state!\n\t(Found ${probs.__permutations} valid game permutations)`);
@@ -765,38 +802,25 @@ class MineSweeper {
             if (tempMinesLeft <= 0 || (this.mines - this.mustBeMines.size) == tempMines.size) {
                 const validGame = this.couldBeValidGame(tempMines);
                 if (validGame) {
-                    probs.__permutations = (probs.__permutations || 0) + 1
+                    probs.__permutations = (probs.__permutations || 0) + 1;
+                    forEach(tempMines, mine => {
+                        probs.set(mine, (probs.get(mine) || 0) + 1)
+                    });
                 }
-
-                return validGame;
             }
 
-            return false;
+            return;
         }
-
-        let success = false;
 
         // What if this was a mine?
         if (this.couldBeAMine(square, tempMines)) {
             tempMines.add(square);
-            success = this._calculateProbs(remaining, i+1, probs, tempMinesLeft - 1, tempMines) || success;
+            this._calculateProbs(remaining, i+1, probs, tempMinesLeft - 1, tempMines);
             tempMines.delete(square);
-
-            if (success) {
-                probs.set(square, (probs.get(square) || 0) + 1);
-            }
         }
 
         // Also what if this wasn't a mine?
-        if (this.couldNotBeMineNot(square)) {
-            success = this._calculateProbs(remaining, i+1, probs, tempMinesLeft, tempMines) || success;
-        }
-
-        return success;
-    }
-
-    private couldNotBeMineNot(square: Square) {
-        return !this.mustBeMines.has(square);
+        this._calculateProbs(remaining, i+1, probs, tempMinesLeft, tempMines);
     }
 
     private couldBeAMine(square: Square, tempMines: Set<Square>) {
@@ -861,3 +885,22 @@ function count<T>(inp: Iterable<T>, func: (next: T) => boolean) {
         return a + (func(c) ? 1 : 0);
     }, 0);
 }
+
+function shuffle<G>(array: G[]) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  }

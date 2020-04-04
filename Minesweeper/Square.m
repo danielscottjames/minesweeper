@@ -32,8 +32,34 @@
         [self addSubview:_mine];
         
         self.state = SquareStateNormal;
+        
+        if (@available(iOS 13.4, *)) {
+            [self addInteraction: [[UIPointerInteraction alloc] init]];
+        }
+        
+        [self addGestureRecognizer:[[UIHoverGestureRecognizer alloc] initWithTarget:self action:@selector(viewHoverChanged:)]];
     }
     return self;
+}
+
+- (void) viewHoverChanged: (UIHoverGestureRecognizer*) gesture {
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        [self.parent bringSubviewToFront: self];
+        [UIView animateWithDuration: 0.1 animations:^{
+            self.layer.borderWidth = 1.0;
+            
+            self.layer.masksToBounds = NO;
+            self.layer.shadowOffset = CGSizeMake(0, 0);
+            self.layer.shadowRadius = 2;
+            self.layer.shadowOpacity = 0.5;
+        }];
+    }
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        [UIView animateWithDuration: 0.1 animations:^{
+            self.layer.borderWidth = 0.5;
+            self.layer.shadowOpacity = 0;
+        }];
+    }
 }
 
 - (void) setNumber:(int)number {
@@ -59,6 +85,7 @@
 
 - (void) setState:(SquareState)state {
     _state = state;
+    self.layer.shadowOpacity = 0;
     
     [_image removeFromSuperview];
     _image = nil;

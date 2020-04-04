@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "ViewController.h"
 
 typedef NS_ENUM(NSInteger, SquareState) {

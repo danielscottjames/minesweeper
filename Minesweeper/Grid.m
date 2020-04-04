@@ -19,7 +19,7 @@
     
     NSIndexPath *_delayPath;
     float _animationDelay;
-    
+        
     int _squareSize;
     
     UILongPressGestureRecognizer *_longTap;
@@ -98,7 +98,7 @@
             for (int j = 0; j < _game.height; j++) {
                 Square *square = [[Square alloc]
                                   initWithFrame:CGRectMake(i*_squareSize, j*_squareSize, _squareSize, _squareSize)];
-                square.parent = self;
+                square.parent = _shadowView;
                 square.number = 0;
                 square.indexPath = [NSIndexPath indexPathForRow:j inSection:i];
                 
@@ -113,8 +113,14 @@
                                                 selector:@selector(settingsChanged)
                                                     name:@"MinesweeperSettingsChanged"
                                                   object:nil];
+//        [self addInteraction:[[UIContextMenuInteraction alloc] initWithDelegate:self]];
     }
     return self;
+}
+
+- (UIContextMenuConfiguration * _Nullable) contextMenuInteraction: (UIContextMenuInteraction *) interaction configurationForMenuAtLocation: (CGPoint) location {
+    [self flag:location];
+    return Nil;
 }
 
 - (void) traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
@@ -285,9 +291,11 @@
         [_game setState:GameStatePlaying];
     }
     
-    [_game tapWithX:square.indexPath.section y:square.indexPath.row];
+    if (![[SettingsManager sharedInstance] getQuestionMarksEnabled] && square.state == SquareStateFlagged) {
+        return;
+    }
     
-    [SoundManager.sharedInstance playSoundEffect:SoundEffectSelect];
+    [_game tapWithX:square.indexPath.section y:square.indexPath.row];
     [self syncBoard];
 }
 
@@ -369,6 +377,9 @@
                 frame = CGRectUnion(frame, obj.frame);
             }];
             
+            float scaleFactor = self.contentScaleFactor / [[UIScreen mainScreen] scale];
+            frame = CGRectMake(frame.origin.x * scaleFactor, frame.origin.y * scaleFactor, frame.size.width * scaleFactor, frame.size.height * scaleFactor);
+            
             BOOL delay = CGRectIntersectsRect(self.scrollView.bounds, frame);
             
             [UIView animateWithDuration:0.1 animations:^{
@@ -383,6 +394,13 @@
                 }
             }];
         }
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:Nil
+                                                        message:@"There is no hint available."
+                                                       delegate:self
+                                              cancelButtonTitle:Nil
+                                              otherButtonTitles:@"Ok", nil];
+        [alert show];
     }
 }
 
@@ -420,6 +438,7 @@
 
 - (void) syncBoard {
     NSArray * board = [_game getBoard];
+    BOOL __block playedSound = false;
     
     [board enumerateObjectsUsingBlock:^(id  _Nonnull row, NSUInteger y, BOOL * _Nonnull stop) {
         [row enumerateObjectsUsingBlock:^(NSDictionary* _Nonnull data, NSUInteger x, BOOL * _Nonnull stop) {
@@ -442,6 +461,11 @@
                 
                 [square setState:state];
                 if (state == SquareStateRevealed) {
+                    if (!playedSound) {
+                        playedSound = true;
+                        [SoundManager.sharedInstance playSoundEffect:SoundEffectSelect];
+                    }
+                    
                     [square removeFromSuperview];
                     [_gridView addSubview:square];
                 }
@@ -474,10 +498,14 @@
         [self removeGestureRecognizer:r];
     }
     
-    // Remind player they must click the smiley to start a new game
-    UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(remind)];
-    singleTap.numberOfTapsRequired = 1;
-    [self addGestureRecognizer:singleTap];
+    [NSTimer scheduledTimerWithTimeInterval:1.0 repeats:NO block:^(NSTimer *timer) {
+        if (self->_game.state == GameStateFinished) {
+            // Remind player they must click the smiley to start a new game
+            UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(remind)];
+            singleTap.numberOfTapsRequired = 1;
+            [self addGestureRecognizer:singleTap];
+        }
+    }];
     
     if (won) {
         self.title.smileyState = SmileyStateWin;
@@ -529,20 +557,23 @@
     UIBezierPath *path = [[UIBezierPath alloc] init];
     
     for (Square *v in _shadowView.subviews) {
-        int i = (int)v.indexPath.section;
-        int j = (int)v.indexPath.row;
-        
-        if ([self getSquareAtSection:i andRow:j-1].state == SquareStateRevealed) {//Top
-            [path appendPath:[UIBezierPath bezierPathWithRect:CGRectMake(v.frame.origin.x, v.frame.origin.y-.5, _squareSize, .5)]];
-        }
-        if ([self getSquareAtSection:i-1 andRow:j].state == SquareStateRevealed) {//Left
-            [path appendPath:[UIBezierPath bezierPathWithRect:CGRectMake(v.frame.origin.x-.5, v.frame.origin.y, .5, _squareSize)]];
-        }
-        if ([self getSquareAtSection:i andRow:j+1].state == SquareStateRevealed) {//Bottom
-            [path appendPath:[UIBezierPath bezierPathWithRect:CGRectMake(v.frame.origin.x, v.frame.origin.y+_squareSize, _squareSize, .5)]];
-        }
-        if ([self getSquareAtSection:i+1 andRow:j].state == SquareStateRevealed) {//Right
-            [path appendPath:[UIBezierPath bezierPathWithRect:CGRectMake(v.frame.origin.x+_squareSize, v.frame.origin.y, .5, _squareSize)]];
+        if ([v isKindOfClass:[Square class]]) {
+            int i = (int)v.indexPath.section;
+            int j = (int)v.indexPath.row;
+            
+            if ([self getSquareAtSection:i andRow:j-1].state == SquareStateRevealed) {//Top
+                [path appendPath:[UIBezierPath bezierPathWithRect:CGRectMake(v.frame.origin.x, v.frame.origin.y-.5, _squareSize, .5)]];
+            }
+            if ([self getSquareAtSection:i-1 andRow:j].state == SquareStateRevealed) {//Left
+                [path appendPath:[UIBezierPath bezierPathWithRect:CGRectMake(v.frame.origin.x-.5, v.frame.origin.y, .5, _squareSize)]];
+            }
+            if ([self getSquareAtSection:i andRow:j+1].state == SquareStateRevealed) {//Bottom
+                [path appendPath:[UIBezierPath bezierPathWithRect:CGRectMake(v.frame.origin.x, v.frame.origin.y+_squareSize, _squareSize, .5)]];
+            }
+            if ([self getSquareAtSection:i+1 andRow:j].state == SquareStateRevealed) {//Right
+                [path appendPath:[UIBezierPath bezierPathWithRect:CGRectMake(v.frame.origin.x+_squareSize, v.frame.origin.y, .5, _squareSize)]];
+            }
+
         }
     }
     
@@ -565,17 +596,21 @@
     
     // Set scale for all squares
     for (UIView *v in _shadowView.subviews) {
-        v.contentScaleFactor = contentScaleFactor;
-        for(UIView *v2 in v.subviews)
-        {
-            v2.contentScaleFactor = contentScaleFactor;
+        if ([v isKindOfClass:[Square class]]) {
+            v.contentScaleFactor = contentScaleFactor;
+            for(UIView *v2 in v.subviews)
+            {
+                v2.contentScaleFactor = contentScaleFactor;
+            }
         }
     }
     for (UIView *v in _gridView.subviews) {
-        v.contentScaleFactor = contentScaleFactor;
-        for(UIView *v2 in v.subviews)
-        {
-            v2.contentScaleFactor = contentScaleFactor;
+        if ([v isKindOfClass:[Square class]]) {
+            v.contentScaleFactor = contentScaleFactor;
+            for(UIView *v2 in v.subviews)
+            {
+                v2.contentScaleFactor = contentScaleFactor;
+            }
         }
     }
 }

@@ -23,6 +23,8 @@
         [userDefaults setBool:NO forKey:@"3DTouchCapabilityAvailable"];
     }
     
+    NSLog(@"Previous Version: %f", [[userDefaults valueForKey:@"version"] floatValue]);
+    NSLog(@"Current  Version: %f", [[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleVersion"] floatValue]);
     
     //Check for first run
     if (![userDefaults valueForKey:@"version"]) {

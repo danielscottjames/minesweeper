@@ -11,7 +11,7 @@
 
 @class MinesweeperGame;
 
-@interface Grid : UIView
+@interface Grid : UIView <UIContextMenuInteractionDelegate>
 
 @property (nonatomic, retain) ViewController* title;
 @property (nonatomic, retain) UIScrollView* scrollView;

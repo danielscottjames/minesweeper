@@ -44,4 +44,13 @@ typedef NS_ENUM(NSInteger, DifficultyLevel) {
 - (float) get3DTouchSensitivity;
 - (float) getHoldDuration;
 
+- (BOOL) getLuckEnabled;
+- (BOOL) getEmptyFirstTapEnabled;
+- (BOOL) getQuestionMarksEnabled;
+- (BOOL) getRandomHintsEnabled;
+- (void) setLuckEnabled:(BOOL)enabled;
+- (void) setEmptyFirstTapEnabled:(BOOL)enabled;
+- (void) setQuestionMarksEnabled:(BOOL)enabled;
+- (void) setRandomHintsEnabled:(BOOL)enabled;
+
 @end

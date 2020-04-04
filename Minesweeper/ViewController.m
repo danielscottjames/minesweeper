@@ -54,6 +54,10 @@
                                               object:nil];
     
     [self.hintButton setEnabled:FALSE];
+    
+    if (@available(iOS 13.4, *)) {
+        [self.smileyButton addInteraction:[[UIPointerInteraction alloc] init]];
+    }
 }
 
 - (IBAction)smileButtonPressed:(id)sender {
@@ -155,8 +159,11 @@
     NSInteger width = [[SettingsManager sharedInstance] getWidth];
     NSInteger height = [[SettingsManager sharedInstance] getHeight];
     NSInteger mines = [[SettingsManager sharedInstance] getMines];
+    BOOL luck = [[SettingsManager sharedInstance] getLuckEnabled];
+    BOOL emptyFirstTap = [[SettingsManager sharedInstance] getEmptyFirstTapEnabled];
+    BOOL randomHints = [[SettingsManager sharedInstance] getRandomHintsEnabled];
     
-    _game = [[MinesweeperGame alloc] initWithDifficulty:difficultyLevel withWidth:width withHeight:height withMines:mines];
+    _game = [[MinesweeperGame alloc] initWithDifficulty:difficultyLevel withWidth:width withHeight:height withMines:mines withLuck:luck withEmptyFirstTap:emptyFirstTap withRandomHints:randomHints];
     
     if (_grid) {
         [_grid removeFromSuperview];
@@ -181,12 +188,12 @@
     
     float paddingX, paddingY;
     if (_grid.frame.size.width > size.width) {
-        paddingX = 8;
+        paddingX = 12;
     } else {
         paddingX = (size.width - _grid.frame.size.width)/2.0;
     }
     if (_grid.frame.size.height > size.height) {
-        paddingY = 8;
+        paddingY = 12;
     } else {
         paddingY = (size.height - _grid.frame.size.height)/2.0;
     }
@@ -288,6 +295,7 @@
             break;
         case SmileyStateWin:
             self.smileyButton.titleLabel.text = @"😎";
+            [self.hintButton setEnabled:NO];
             break;
             
         case SmileyStateNormal:
