@@ -701,6 +701,8 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="UVm-Sq-PyM">
                         <rect key="frame" x="0.0" y="47" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <navigationBarAppearance key="standardAppearance"/>
+                        <navigationBarAppearance key="scrollEdgeAppearance"/>
                     </navigationBar>
                     <connections>
                         <segue destination="vXZ-lx-hvc" kind="relationship" relationship="rootViewController" id="BBI-Ih-aZj"/>
