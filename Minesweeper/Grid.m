@@ -64,7 +64,7 @@
         self.layer.shadowRadius = 20;
         
         UIVisualEffect *blurEffect;
-        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemThinMaterial];
         UIVisualEffectView *visualEffectView;
         visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
         visualEffectView.frame = backgroundView.bounds;
@@ -435,6 +435,15 @@
         }
     }
 }
+
+- (void) rerenderBoard {
+    for (NSMutableArray *innerSquares in self.squares) {
+        for (Square *square in innerSquares) {
+            [square renderCurrentState:NO];
+        }
+    }
+}
+
 
 - (void) syncBoard {
     NSArray * board = [_game getBoard];

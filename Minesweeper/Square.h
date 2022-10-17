@@ -24,4 +24,5 @@ typedef NS_ENUM(NSInteger, SquareState) {
 @property (nonatomic, retain) NSIndexPath *indexPath;
 - (void) bounce;
 - (void) bounceFlag;
+- (void) renderCurrentState:(BOOL)withAnimation;
 @end
