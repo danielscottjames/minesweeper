@@ -5,7 +5,17 @@
       "scale" : "1x"
     },
     {
-      "filename" : "urban grunge geometric seamless pattern 140115.png",
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "urban grunge geometric seamless pattern 140115 2x light.png",
       "idiom" : "universal",
       "resizing" : {
         "cap-insets" : {
@@ -24,7 +34,13 @@
       "scale" : "2x"
     },
     {
-      "filename" : "urban grunge geometric seamless pattern 140115-3.png",
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "urban grunge geometric seamless pattern 140116 2x dark.png",
       "idiom" : "universal",
       "resizing" : {
         "cap-insets" : {
@@ -34,9 +50,53 @@
           "top" : 0
         },
         "center" : {
-          "height" : 2000,
+          "height" : 500,
           "mode" : "tile",
-          "width" : 2000
+          "width" : 500
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "2x"
+    },
+    {
+      "filename" : "urban grunge geometric seamless pattern 140115 3x light.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 0,
+          "left" : 0,
+          "right" : 0,
+          "top" : 0
+        },
+        "center" : {
+          "height" : 750,
+          "mode" : "tile",
+          "width" : 750
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "3x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "urban grunge geometric seamless pattern 140115 3x dark.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 0,
+          "left" : 0,
+          "right" : 0,
+          "top" : 0
+        },
+        "center" : {
+          "height" : 750,
+          "mode" : "tile",
+          "width" : 750
         },
         "mode" : "9-part"
       },
