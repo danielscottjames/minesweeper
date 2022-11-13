@@ -58,13 +58,13 @@
         [self addSubview:backgroundView];
         
         // Add drop shadow
-        self.layer.shadowColor = [[UIColor blackColor] CGColor];
+        self.layer.shadowColor = [[UIColor colorNamed:@"Grid Color"] CGColor];
         self.layer.shadowOffset = CGSizeMake(0,0);
         self.layer.shadowOpacity = 1;
         self.layer.shadowRadius = 20;
         
         UIVisualEffect *blurEffect;
-        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemThinMaterial];
         UIVisualEffectView *visualEffectView;
         visualEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
         visualEffectView.frame = backgroundView.bounds;
@@ -72,12 +72,12 @@
         
         UIView *frontView = [[UIView alloc] initWithFrame:gridFrame];
         [[frontView layer] setBorderWidth:1];
-        [[frontView layer] setBorderColor:[UIColor blackColor].CGColor];
+        [[frontView layer] setBorderColor:[UIColor colorNamed:@"Grid Color"].CGColor];
         frontView.userInteractionEnabled = NO;
         [self addSubview:frontView];
         
         _shadowView = [[UIView alloc] initWithFrame:gridFrame];
-        _shadowView.layer.shadowColor = [UIColor blackColor].CGColor;
+        _shadowView.layer.shadowColor = [UIColor colorNamed:@"Grid Color"].CGColor;
         _shadowView.layer.shadowOffset = CGSizeMake(0, 0);
         _shadowView.layer.shadowOpacity = 1;
         _shadowView.layer.shadowRadius = 0.75;
@@ -435,6 +435,15 @@
         }
     }
 }
+
+- (void) rerenderBoard {
+    for (NSMutableArray *innerSquares in self.squares) {
+        for (Square *square in innerSquares) {
+            [square renderCurrentState:NO];
+        }
+    }
+}
+
 
 - (void) syncBoard {
     NSArray * board = [_game getBoard];

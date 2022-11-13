@@ -60,6 +60,11 @@
     }
 }
 
+- (void) traitCollectionDidChange: (UITraitCollection *) previousTraitCollection {
+    [super traitCollectionDidChange: previousTraitCollection];
+    [_grid rerenderBoard];
+}
+
 - (IBAction)smileButtonPressed:(id)sender {
     [SoundManager.sharedInstance playSoundEffect:SoundEffectSelect];
     [self promptNewGame];

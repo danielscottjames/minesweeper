@@ -21,5 +21,6 @@
 - (id) initWithGame:(MinesweeperGame *)game withSize:(UIUserInterfaceSizeClass)size;
 - (void) hint;
 - (void) undo;
+- (void) rerenderBoard;
 
 @end

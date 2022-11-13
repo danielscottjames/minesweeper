@@ -10,7 +10,6 @@
 
 @interface Square () {
     UIImageView *_image;
-    UIImageView *_mine;
     UILabel *_label;
     
     int _width;
@@ -28,8 +27,8 @@
     if (self) {
         self.backgroundColor = [UIColor clearColor];
         
-        _mine = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _width, _width)];
-        [self addSubview:_mine];
+        _image = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, _width, _width)];
+        [self addSubview:_image];
         
         self.state = SquareStateNormal;
         
@@ -64,14 +63,6 @@
 
 - (void) setNumber:(int)number {
     _number = number;
-    
-    if (number == -1) {
-        if (_highlight) {
-            _mine.image = [UIImage imageNamed:@"MineRed"];
-        } else {
-            _mine.image = [UIImage imageNamed:@"Mine"];
-        }
-    }
 }
 
 - (void) setHighlight:(BOOL)highlight {
@@ -85,79 +76,72 @@
 
 - (void) setState:(SquareState)state {
     _state = state;
+    [self renderCurrentState:YES];
+}
+
+- (void) renderCurrentState:(BOOL)withAnimation {
     self.layer.shadowOpacity = 0;
-    
-    [_image removeFromSuperview];
-    _image = nil;
+
+    _image.hidden = YES;
     _label.hidden = YES;
-    _mine.hidden = YES;
-    
+
     switch (_state) {
         case SquareStateFlagged:
-            if (_highlight) {
-                [self prepareImage:@"FlagRed"];
-                _image.alpha = 1;
-            } else {
-                [self prepareImage:@"Flag"];
-            }
+            [self renderFilledSquare];
+            [self renderImage:@"Flag" withColor:[UIColor colorNamed:@"Marker Color"]];
             break;
         case SquareStateQuestion:
-            [self prepareImage:@"QuestionMark"];
+            [self renderFilledSquare];
+            [self renderImage:@"QuestionMark" withColor:[UIColor colorNamed:@"Marker Color"]];
             break;
         case SquareStateRevealed:
             [self prepareLabel];
-            
             if (self.number < 0) {
-                _mine.hidden = NO;
-                [self bounceWithDelay:self.animationDelay*.75];
+                [self renderImage:@"Mine" withColor:[UIColor colorNamed:@"Mine Color"]];
+                if (withAnimation) {
+                    [self bounceWithDelay:self.animationDelay*.75];
+                }
             }
-        {
-            UIColor *newBorderColor;
-            float newBorderWidth;
-            if (self.number > 0) {
-                newBorderColor = [UIColor blackColor];
-                newBorderWidth = 0.5;
-            } else {
-                newBorderColor = [UIColor clearColor];
-                newBorderWidth = 0;
+            {
+                UIColor *newBorderColor;
+                float newBorderWidth;
+                if (self.number > 0) {
+                    newBorderColor = [UIColor colorNamed:@"Grid Color"];
+                    newBorderWidth = 0.5;
+                } else {
+                    newBorderColor = [UIColor clearColor];
+                    newBorderWidth = 0;
+                }
+
+                CABasicAnimation *backgroundColor = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
+                backgroundColor.fromValue = (id)(self.layer.backgroundColor);
+                backgroundColor.toValue = (id)[self backgroundColorForNumber:self.number].CGColor;
+                // ... and change the model value
+                self.layer.backgroundColor = [self backgroundColorForNumber:self.number].CGColor;
+
+                CABasicAnimation *borderColor = [CABasicAnimation animationWithKeyPath:@"borderColor"];
+                borderColor.fromValue = (id)(self.layer.borderColor);
+                borderColor.toValue   = (id)newBorderColor.CGColor;
+                // ... and change the model value
+                self.layer.borderColor = [[self colorForNumber:self.number] colorWithAlphaComponent:.15].CGColor;
+
+                // CABasicAnimation *borderWidth = [CABasicAnimation animationWithKeyPath:@"borderWidth"];
+                // borderWidth.fromValue = [NSNumber numberWithFloat:self.layer.borderWidth];
+                // borderWidth.toValue   = [NSNumber numberWithFloat:newBorderWidth];
+                // ... and change the model value
+                self.layer.borderWidth = newBorderWidth;
+
+                CAAnimationGroup *group = [CAAnimationGroup animation];
+                group.duration   = 0.075 + self.animationDelay;
+                group.animations = @[backgroundColor, borderColor];
+                // group.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+
+                [self.layer addAnimation:group forKey:@"revealAnimation"];
             }
-            
-            CABasicAnimation *backgroundColor = [CABasicAnimation animationWithKeyPath:@"backgroundColor"];
-            backgroundColor.fromValue = (id)(self.layer.backgroundColor);
-            backgroundColor.toValue   = (id)[[self colorForNumber:self.number] colorWithAlphaComponent:.14].CGColor;
-            // ... and change the model value
-            self.layer.backgroundColor = [[self colorForNumber:self.number] colorWithAlphaComponent:.14].CGColor;
-            
-            CABasicAnimation *borderColor = [CABasicAnimation animationWithKeyPath:@"borderColor"];
-            borderColor.fromValue = (id)(self.layer.borderColor);
-            borderColor.toValue   = (id)newBorderColor.CGColor;
-            // ... and change the model value
-            self.layer.borderColor = [[self colorForNumber:self.number] colorWithAlphaComponent:.15].CGColor;
-            
-//            CABasicAnimation *borderWidth = [CABasicAnimation animationWithKeyPath:@"borderWidth"];
-//            borderWidth.fromValue = [NSNumber numberWithFloat:self.layer.borderWidth];
-//            borderWidth.toValue   = [NSNumber numberWithFloat:newBorderWidth];
-//            // ... and change the model value
-            self.layer.borderWidth = newBorderWidth;
-            
-            CAAnimationGroup *group = [CAAnimationGroup animation];
-            group.duration   = 0.075 + self.animationDelay;
-            group.animations = @[backgroundColor, borderColor];
-            //group.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-            
-            [self.layer addAnimation:group forKey:@"revealAnimation"];
-        }
-            
             break;
         case SquareStateNormal:
         default:
-        {
-            UIColor* c = [UIColor whiteColor];
-            self.layer.backgroundColor = c.CGColor;
-            c = [UIColor blackColor];
-            self.layer.borderColor = c.CGColor;
-            self.layer.borderWidth = .5;
-        }
+            [self renderFilledSquare];
     }
 }
 
@@ -171,7 +155,7 @@
         
         [_label sizeToFit];
         [_label setCenter:CGPointMake(_width/2, _height/2)];
-       
+        
         [self addSubview:_label];
         
         _label.contentScaleFactor = self.contentScaleFactor;
@@ -209,44 +193,34 @@
     [NSTimer scheduledTimerWithTimeInterval:delay target:self selector:@selector(bounce) userInfo:nil repeats:NO];
 }
 
-- (void) prepareImage:(NSString *)image {
-    _image = [[UIImageView alloc] initWithImage:[UIImage imageNamed:image]];
-    _image.frame = CGRectMake(0, 0, _width, _height);
-    _image.alpha = .6;
-    
-    [self addSubview:_image];
+- (void) renderFilledSquare {
+    self.layer.backgroundColor = UIColor.systemGray5Color.CGColor;
+    self.layer.borderColor = [UIColor colorNamed:@"Grid Color"].CGColor;
+    self.layer.borderWidth = .5;
+}
+
+- (void) renderImage:(NSString *) image withColor:(UIColor*) color {
+    _image.image = [UIImage imageNamed:image];
+    if (_highlight) {
+        _image.tintColor = UIColor.systemRedColor;
+    } else {
+        _image.tintColor = color;
+    }
+    _image.hidden = NO;
 }
 
 - (UIColor *) colorForNumber:(int)number {
-    switch (number) {
-        case 1:
-            return [UIColor colorWithRed:0.000 green:0.000 blue:1.000 alpha:1];
-            break;
-        case 2:
-            return [UIColor colorWithRed:0.125 green:0.502 blue:0.008 alpha:1];
-            break;
-        case 3:
-            return [UIColor colorWithRed:0.976 green:0.059 blue:0.004 alpha:1];
-            break;
-        case 4:
-            return [UIColor colorWithRed:0.000 green:0.000 blue:0.502 alpha:1];
-            break;
-        case 5:
-            return [UIColor colorWithRed:0.506 green:0.016 blue:0.000 alpha:1];
-            break;
-        case 6:
-            return [UIColor colorWithRed:0.110 green:0.502 blue:0.506 alpha:1];
-            break;
-        case 7:
-            return [UIColor colorWithRed:0.000 green:0.000 blue:0.000 alpha:1];
-            break;
-        case 8:
-            return [UIColor colorWithRed:0.506 green:0.506 blue:0.510 alpha:1];
-            break;
-        default:
-            return [UIColor clearColor];
-            break;
+    if (number >= 1 || number <= 8) {
+        return [UIColor colorNamed:[NSString stringWithFormat:@"Square %@", @(number)]];
     }
+    return [UIColor clearColor];
+}
+
+- (UIColor *) backgroundColorForNumber:(int)number {
+    if (number >= 1 || number <= 8) {
+        return [UIColor colorNamed:[NSString stringWithFormat:@"Square Background %@", @(number)]];
+    }
+    return [UIColor clearColor];
 }
 
 
