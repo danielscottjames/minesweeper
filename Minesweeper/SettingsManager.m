@@ -71,13 +71,6 @@
 }
 
 - (void) resetupSettings {
-    // Advanced Settings
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"luck"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"emptyFirstTap"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"questionMarks"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"randomHints"];
-    
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (BOOL) getLuckEnabled {

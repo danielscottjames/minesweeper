@@ -595,23 +595,68 @@ class MineSweeper {
     }
 
     /**
+     * Reveals the rest of the board other than squares connected
+     * to the passed in square.
+     * 
+     * @param square 
+     * @param fn 
+     */
+    private withEverythingElseRevealed<G>(square: Square, fn: () => G) {
+        let safe = new Set<Square>();
+        const addToSet = (square: Square) => {
+            if (!safe.has(square)) {
+                safe.add(square);
+                square.neighbors.forEach(n => {
+                    if (n.state != SquareState.Revealed) {
+                        addToSet(n);
+                    }
+                });
+            }
+        }
+        addToSet(square);
+
+        const toUndo: (() => void)[] = [];
+        forEach(this.squares.values(), (s) => {
+            if (!safe.has(s) && s.state != SquareState.Revealed) {
+                if (s.value == MINE) {
+                    const old = square.state;
+                    toUndo.push(() => square.state = old);
+                    square.state = SquareState.Flagged;
+                } else {
+                    const old = square.state;
+                    toUndo.push(() => square.state = old);
+                    square.state = SquareState.Revealed;
+                }
+            }
+        });
+
+        try {
+            return fn();
+        } finally {
+            toUndo.forEach(fn => fn());
+        }
+    }
+
+    /**
      * In order to try luck,
      * ...the user must not have any bad flags,
      * ...nor must there be any obvious additional flags
      * ...nor must there be any obvious tiles to reveal
      */
     private tryLuck(square: Square) {
-        if (square.value == MINE && !this.incorrectlyFlagged().length && !this.nextObviousFlag().length && !this.nextObviousTap().length) {
-            try {
-                const [probs, remaining] = this.calculateProbs();
-                const total = probs.get(square);
-
-                if (probs.__permutations && total && total < probs.__permutations && !remaining.find(r => probs.get(r)! < total)) {
-                    this.shuffle(remaining, square);
+        if (square.value == MINE && !this.incorrectlyFlagged().length) {
+            this.withEverythingElseRevealed(square, () => {
+                try {
+                    let [probs, remaining] = this.calculateProbs();
+                    const total = probs.get(square);
+    
+                    if (probs.__permutations && total && total < probs.__permutations && !remaining.find(r => probs.get(r)! < total)) {
+                        this.shuffle(remaining, square);
+                    }
+                } catch (e) {
+                    console.log(`${e}`);
                 }
-            } catch (e) {
-                console.log(`${e}`);
-            }
+            });
         }
     }
 
