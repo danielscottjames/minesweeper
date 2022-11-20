@@ -292,20 +292,20 @@
     
     switch (self.smileyState) {
         case SmileyStateAction:
-            self.smileyButton.titleLabel.text = @"😮";
+            [self.smileyButton setTitle: @"😮" forState: UIControlStateNormal];
             break;
         case SmileyStateLose:
-            self.smileyButton.titleLabel.text = @"😵";
+            [self.smileyButton setTitle: @"😵" forState: UIControlStateNormal];
             self.hintButton.image = [UIImage systemImageNamed:@"arrow.uturn.left"];
             break;
         case SmileyStateWin:
-            self.smileyButton.titleLabel.text = @"😎";
+            [self.smileyButton setTitle: @"😎" forState: UIControlStateNormal];
             [self.hintButton setEnabled:NO];
             break;
             
         case SmileyStateNormal:
         default:
-            self.smileyButton.titleLabel.text = @"😀";
+            [self.smileyButton setTitle: @"😀" forState: UIControlStateNormal];
             self.hintButton.image = [UIImage systemImageNamed:@"lightbulb"];
     }
 }
