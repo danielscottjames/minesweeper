@@ -86,11 +86,11 @@ class MineSweeper {
     public lastTapPoint: Point = { x: 0, y: 0 };
 
     constructor(public readonly width: number,
-                public readonly height: number,
-                public readonly mines: number,
-                public readonly luck = true,
-                public readonly emptyFirstTap = true,
-                public readonly randomHints = true,) {
+        public readonly height: number,
+        public readonly mines: number,
+        public readonly luck = true,
+        public readonly emptyFirstTap = true,
+        public readonly randomHints = true,) {
         if (mines < 1 || mines >= (width * height - 9) || width < 1 || height < 1) {
             throw new Error('Invalid starting game configuration!');
         }
@@ -108,6 +108,23 @@ class MineSweeper {
                     .forEach(neighbor => square.neighbors.add(neighbor));
             }
         }
+    }
+
+    private throwIfDebugElseLog(message: string) {
+        if (this.debug) {
+            throw new Error(message);
+        } else {
+            console.log(message);
+        }
+    }
+
+    private debug = false;
+    public debugInit(mines: string[] = []) {
+        this.debug = true;
+        mines.forEach(mine => {
+            const square = this.squares.get(mine);
+            square && this.addMine(square);
+        });
     }
 
     public init = (() => {
@@ -301,8 +318,8 @@ class MineSweeper {
 
             // Show the least likely squares (which would be guaranteed to not be a mine due to hint mode)
             const leastProbable = [...filter(filter(shuffle([...probs.entries()])
-                                    .sort(([, p1], [, p2]) => p1 - p2), ([s]) => s.state != SquareState.Revealed), s => s[0].value != MINE)];
-            if (leastProbable.length 
+                .sort(([, p1], [, p2]) => p1 - p2), ([s]) => s.state != SquareState.Revealed), s => s[0].value != MINE)];
+            if (leastProbable.length
                 // If luck is disabled, only show the least probable if its guaranteed to not be a mine.
                 && (this.luck || leastProbable[0][1] == 0)) {
                 this.lastHint = leastProbable[0]![0];
@@ -324,7 +341,7 @@ class MineSweeper {
         }
     }
 
-    private lastHint: Square|undefined = undefined;
+    private lastHint: Square | undefined = undefined;
     private randomHint() {
         if (!this.randomHints) {
             return undefined;
@@ -375,8 +392,8 @@ class MineSweeper {
 
     private advancedHint() {
         return [...filter(filter(this.mustBeMines.values(), s => s.state != SquareState.Flagged), s => s.state != SquareState.Revealed),
-                     ...filter(this.cantBeMines.values(), s => s.state != SquareState.Revealed)]
-                     .sort((s1, s2) => Point.distance(s1.point, this.lastTapPoint) - Point.distance(s2.point, this.lastTapPoint));
+        ...filter(this.cantBeMines.values(), s => s.state != SquareState.Revealed)]
+            .sort((s1, s2) => Point.distance(s1.point, this.lastTapPoint) - Point.distance(s2.point, this.lastTapPoint));
     }
 
     public undo() {
@@ -399,7 +416,7 @@ class MineSweeper {
                 // Ensure we have the most up to date info
                 this.calculateProbs();
             } catch (e) {
-                
+
             } finally {
                 forEach(this.squares.values(), square => {
                     if (square.state == SquareState.Flagged) {
@@ -411,7 +428,7 @@ class MineSweeper {
                     }
                 });
             }
-            
+
 
             this.shuffle([...filter(this.squares.values(), square => square.state != SquareState.Revealed)]);
         }
@@ -619,13 +636,13 @@ class MineSweeper {
         forEach(this.squares.values(), (s) => {
             if (!safe.has(s) && s.state != SquareState.Revealed) {
                 if (s.value == MINE) {
-                    const old = square.state;
-                    toUndo.push(() => square.state = old);
-                    square.state = SquareState.Flagged;
+                    const old = s.state;
+                    toUndo.push(() => s.state = old);
+                    s.state = SquareState.Flagged;
                 } else {
-                    const old = square.state;
-                    toUndo.push(() => square.state = old);
-                    square.state = SquareState.Revealed;
+                    const old = s.state;
+                    toUndo.push(() => s.state = old);
+                    s.state = SquareState.Revealed;
                 }
             }
         });
@@ -634,6 +651,11 @@ class MineSweeper {
             return fn();
         } finally {
             toUndo.forEach(fn => fn());
+
+            // Can't trust cached results for anything that's not in this island
+            // (technically, this island is flawed too since it assumed the # of remaining mines)
+            this.cantBeMines = new Set(filter(this.cantBeMines.values(), s => safe.has(s)));
+            this.mustBeMines = new Set(filter(this.mustBeMines.values(), s => safe.has(s)));
         }
     }
 
@@ -649,7 +671,7 @@ class MineSweeper {
                 try {
                     let [probs, remaining] = this.calculateProbs();
                     const total = probs.get(square);
-    
+
                     if (probs.__permutations && total && total < probs.__permutations && !remaining.find(r => probs.get(r)! < total)) {
                         this.shuffle(remaining, square);
                     }
@@ -673,20 +695,20 @@ class MineSweeper {
                 return;
             }
 
-            const tilesToPickFrom = remaining;//.filter(s => !this.cantBeMines.has(s));
+            const tilesToPickFrom = remaining;
             const edges = tilesToPickFrom.filter(s => !!find(s.neighbors, n => n.state == SquareState.Revealed));
 
             console.log(`Shuffling ${minesToPlace} mines from ${tilesToPickFrom.length} with ${edges.length} edges`);
-    
+
             let tempMines = new Set<Square>();
             let edgesRemaining = edges;
-    
+
             let i = 0;
             while (i++ < SHUFFLE_LIMIT) {
                 // It's somewhat important that this loop doesn't scale with the size of the board
                 if (edgesRemaining.length) {
                     edgesRemaining = edgesRemaining.filter(s => !tempMines.has(s) && this.couldBeAMine(s, tempMines));
-    
+
                     // We've placed all the edges, which means if this is a valid game we just need to randomly
                     // place the rest, so check now.
                     if (!edgesRemaining.length && tempMines.size && !this.couldBeValidGame(tempMines)) {
@@ -696,18 +718,18 @@ class MineSweeper {
                         continue;
                     }
                 }
-                
-    
+
+
                 const toPickFrom = edgesRemaining.length ? edgesRemaining : tilesToPickFrom;
                 if (!toPickFrom.length) {
                     console.log('Error!! ' + edges.length + " " + tilesToPickFrom.length);
                 }
                 const next = toPickFrom[Math.floor(Math.random() * toPickFrom.length)]!;
-    
+
                 if ((!avoid || next != avoid) && this.couldBeAMine(next, tempMines)) {
                     tempMines.add(next);
                 }
-    
+
                 if (tempMines.size == minesToPlace) {
                     if (this.couldBeValidGame(tempMines)) {
                         minesRemaining.forEach(m => this.removeMine(m));
@@ -720,7 +742,7 @@ class MineSweeper {
                     }
                 }
             }
-    
+
             if (i > SHUFFLE_LIMIT) {
                 console.log(`Failed to shuffle the board in ${i}/${SHUFFLE_LIMIT} loops`);
             } else {
@@ -757,7 +779,7 @@ class MineSweeper {
     private addCantBeMine(square: Square) {
         if (!this.cantBeMines.has(square)) {
             if (square.value == MINE) {
-                console.log(`TRIED TO ADD A MINE (${square.name}) TO CANTBEMINES!!`);
+                this.throwIfDebugElseLog(`TRIED TO ADD A MINE (${square.name}) TO CANTBEMINES!!`);
                 return;
             }
             this.cantBeMines.add(square);
@@ -767,7 +789,7 @@ class MineSweeper {
     private addMustBeMine(square: Square) {
         if (!this.mustBeMines.has(square)) {
             if (square.value != MINE) {
-                console.log(`TRIED TO ADD A NON-MINE (${square.name}) TO MUSTBEMINES!!`);
+                this.throwIfDebugElseLog(`TRIED TO ADD A NON-MINE (${square.name}) TO MUSTBEMINES!!`);
                 return;
             }
             this.mustBeMines.add(square);
@@ -786,7 +808,7 @@ class MineSweeper {
             if (n.value == neighboringMines) {
                 // All other neighbors cant be a mine
                 forEach(filter(n.neighbors, nn => nn.state != SquareState.Revealed && !this.mustBeMines.has(nn)), nn => this.addCantBeMine(nn));
-            } else if (n.value == (neighboringUnrevelead - neighboringCantBeMines - neighboringMines) + neighboringMines) {
+            } else if (n.value - neighboringMines == (neighboringUnrevelead - neighboringCantBeMines)) {
                 // All un-categorized neighbors must be mines
                 forEach(filter(n.neighbors, nn => nn.state != SquareState.Revealed && !this.mustBeMines.has(nn) && !this.cantBeMines.has(nn)), nn => this.addMustBeMine(nn));
             }
@@ -860,12 +882,12 @@ class MineSweeper {
         // What if this was a mine?
         if (this.couldBeAMine(square, tempMines)) {
             tempMines.add(square);
-            this._calculateProbs(remaining, i+1, probs, tempMinesLeft - 1, tempMines);
+            this._calculateProbs(remaining, i + 1, probs, tempMinesLeft - 1, tempMines);
             tempMines.delete(square);
         }
 
         // Also what if this wasn't a mine?
-        this._calculateProbs(remaining, i+1, probs, tempMinesLeft, tempMines);
+        this._calculateProbs(remaining, i + 1, probs, tempMinesLeft, tempMines);
     }
 
     private couldBeAMine(square: Square, tempMines: Set<Square>) {
@@ -933,19 +955,19 @@ function count<T>(inp: Iterable<T>, func: (next: T) => boolean) {
 
 function shuffle<G>(array: G[]) {
     var currentIndex = array.length, temporaryValue, randomIndex;
-  
+
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
-  
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex -= 1;
-  
-      // And swap it with the current element.
-      temporaryValue = array[currentIndex];
-      array[currentIndex] = array[randomIndex];
-      array[randomIndex] = temporaryValue;
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
     }
-  
+
     return array;
-  }
+}

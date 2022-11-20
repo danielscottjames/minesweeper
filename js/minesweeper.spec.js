@@ -23,3 +23,12 @@ for (let i = 0; i < 100; i++) {
     process.stdout.write('.');
 }
 process.stdout.write('\n');
+(function () {
+    const MINES = [
+        '7_0', '7_1', '8_1', '1_2', '5_2', '0_3', '7_3', '8_3', '6_4', '8_4', '0_6', '7_8', '1_10', '4_10', '3_11', '7_11', '2_12', '2_13',
+    ];
+    const game = new MineSweeper(9, 14, MINES.length, true, true, false);
+    game.debugInit(MINES);
+    game.tap({ x: 3, y: 5 });
+    game.tap({ x: 6, y: 4 });
+})();
